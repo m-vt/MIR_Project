@@ -23,6 +23,7 @@
       <change beforePath="$PROJECT_DIR$/.idea/MIR.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/MIR.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -40,6 +41,7 @@
   <component name="PropertiesComponent">
     <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
@@ -71,7 +73,10 @@
       <method v="2" />
     </configuration>
   </component>
-  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="SpellCheckerSettings" BundledDictionaries="0" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" Dictionaries="0" CorrectionsLimit="5" DefaultDictionary="application-level" UseSingleDictionary="true" />
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="1b7c5d93-594d-4666-ae9a-ef9d3609c96c" name="Default Changelist" comment="" />
@@ -99,6 +104,7 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="stemming and delete punctiations" />
@@ -109,34 +115,43 @@
       <screen x="0" y="0" width="1280" height="680" />
     </state>
     <state x="371" y="87" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1280.680@0.0.1280.680" timestamp="1603443827090" />
-    <state width="1259" height="254" key="GridCell.Tab.0.bottom" timestamp="1603443937713">
-      <screen x="0" y="0" width="1280" height="680" />
+    <state width="1419" height="208" key="GridCell.Tab.0.bottom" timestamp="1603454274352">
+      <screen x="0" y="23" width="1440" height="821" />
     </state>
     <state width="1259" height="254" key="GridCell.Tab.0.bottom/0.0.1280.680@0.0.1280.680" timestamp="1603443937713" />
-    <state width="1419" height="247" key="GridCell.Tab.0.bottom/0.0.1440.900@0.0.1440.900" timestamp="1603355360838" />
+    <state width="1419" height="245" key="GridCell.Tab.0.bottom/0.0.1440.900@0.0.1440.900" timestamp="1603449174059" />
     <state width="1419" height="301" key="GridCell.Tab.0.bottom/0.23.1440.799@0.23.1440.799" timestamp="1603300995897" />
-    <state width="1259" height="254" key="GridCell.Tab.0.center" timestamp="1603443937713">
-      <screen x="0" y="0" width="1280" height="680" />
+    <state width="1419" height="208" key="GridCell.Tab.0.bottom/0.23.1440.816@0.23.1440.816" timestamp="1603451767853" />
+    <state width="1419" height="208" key="GridCell.Tab.0.bottom/0.23.1440.821@0.23.1440.821" timestamp="1603454274352" />
+    <state width="1419" height="208" key="GridCell.Tab.0.center" timestamp="1603454274352">
+      <screen x="0" y="23" width="1440" height="821" />
     </state>
     <state width="1259" height="254" key="GridCell.Tab.0.center/0.0.1280.680@0.0.1280.680" timestamp="1603443937713" />
-    <state width="1419" height="247" key="GridCell.Tab.0.center/0.0.1440.900@0.0.1440.900" timestamp="1603355360837" />
+    <state width="1419" height="245" key="GridCell.Tab.0.center/0.0.1440.900@0.0.1440.900" timestamp="1603449174057" />
     <state width="1419" height="301" key="GridCell.Tab.0.center/0.23.1440.799@0.23.1440.799" timestamp="1603300995896" />
-    <state width="1259" height="254" key="GridCell.Tab.0.left" timestamp="1603443937713">
-      <screen x="0" y="0" width="1280" height="680" />
+    <state width="1419" height="208" key="GridCell.Tab.0.center/0.23.1440.816@0.23.1440.816" timestamp="1603451767852" />
+    <state width="1419" height="208" key="GridCell.Tab.0.center/0.23.1440.821@0.23.1440.821" timestamp="1603454274352" />
+    <state width="1419" height="208" key="GridCell.Tab.0.left" timestamp="1603454274352">
+      <screen x="0" y="23" width="1440" height="821" />
     </state>
     <state width="1259" height="254" key="GridCell.Tab.0.left/0.0.1280.680@0.0.1280.680" timestamp="1603443937713" />
-    <state width="1419" height="247" key="GridCell.Tab.0.left/0.0.1440.900@0.0.1440.900" timestamp="1603355360837" />
+    <state width="1419" height="245" key="GridCell.Tab.0.left/0.0.1440.900@0.0.1440.900" timestamp="1603449174057" />
     <state width="1419" height="301" key="GridCell.Tab.0.left/0.23.1440.799@0.23.1440.799" timestamp="1603300995895" />
-    <state width="1259" height="254" key="GridCell.Tab.0.right" timestamp="1603443937713">
-      <screen x="0" y="0" width="1280" height="680" />
+    <state width="1419" height="208" key="GridCell.Tab.0.left/0.23.1440.816@0.23.1440.816" timestamp="1603451767852" />
+    <state width="1419" height="208" key="GridCell.Tab.0.left/0.23.1440.821@0.23.1440.821" timestamp="1603454274352" />
+    <state width="1419" height="208" key="GridCell.Tab.0.right" timestamp="1603454274352">
+      <screen x="0" y="23" width="1440" height="821" />
     </state>
     <state width="1259" height="254" key="GridCell.Tab.0.right/0.0.1280.680@0.0.1280.680" timestamp="1603443937713" />
-    <state width="1419" height="247" key="GridCell.Tab.0.right/0.0.1440.900@0.0.1440.900" timestamp="1603355360838" />
+    <state width="1419" height="245" key="GridCell.Tab.0.right/0.0.1440.900@0.0.1440.900" timestamp="1603449174058" />
     <state width="1419" height="301" key="GridCell.Tab.0.right/0.23.1440.799@0.23.1440.799" timestamp="1603300995896" />
-    <state x="142" y="0" key="SettingsEditor" timestamp="1603356539209">
-      <screen x="0" y="0" width="1280" height="680" />
+    <state width="1419" height="208" key="GridCell.Tab.0.right/0.23.1440.816@0.23.1440.816" timestamp="1603451767852" />
+    <state width="1419" height="208" key="GridCell.Tab.0.right/0.23.1440.821@0.23.1440.821" timestamp="1603454274352" />
+    <state x="160" y="0" key="SettingsEditor" timestamp="1603447129348">
+      <screen x="0" y="0" width="1440" height="900" />
     </state>
     <state x="142" y="0" key="SettingsEditor/0.0.1280.680@0.0.1280.680" timestamp="1603356539209" />
+    <state x="160" y="0" key="SettingsEditor/0.0.1440.900@0.0.1440.900" timestamp="1603447129348" />
     <state x="100" y="21" width="1240" height="879" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1603355005715">
       <screen x="0" y="23" width="1440" height="806" />
     </state>
