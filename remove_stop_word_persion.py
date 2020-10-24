@@ -25,11 +25,11 @@ with open('persian_tokenized_text.csv', newline='') as csvfile:
             a = a.replace('[', '')
             c = a.split(',')
             print(c)
-            if count == 100:
+            if count == 5:
                 break;
-            for w in c:
+            for w in c[:]:
                 if w in stop_words:
                     c.remove(w)
-            print(type(c))
             count = count + 1
+            print(c)
             writer1.writerow(list(c))
