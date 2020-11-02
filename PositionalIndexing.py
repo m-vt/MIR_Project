@@ -1,4 +1,5 @@
 import csv
+import pickle
 
 
 def ReadFile(filename):
@@ -21,7 +22,7 @@ def SetDocIDAndPositions(term_dict, doc_id, index_col, list_data_without_stopwor
         for term2_id in range(len(list_data_with_stopwords[doc_id][index_col])):
             if list_data_with_stopwords[doc_id][index_col][term2_id] == list_data_without_stopwords[doc_id][index_col][term1_id]:
                 positions.append(term2_id + 1)
-        print(list_data_without_stopwords[doc_id][index_col][term1_id] , positions)
+        # print(list_data_without_stopwords[doc_id][index_col][term1_id] , positions)
         if list_data_without_stopwords[doc_id][index_col][term1_id] not in term_dict.keys():
             term_dict[list_data_without_stopwords[doc_id][index_col][term1_id]] = [[doc_id, positions]]
         elif [doc_id, positions] not in term_dict[list_data_without_stopwords[doc_id][index_col][term1_id]]:
@@ -35,4 +36,18 @@ def CreatePositionalIndex():
     for doc_id in range(1, len(list_data_with_stopwords)):
         SetDocIDAndPositions(term_dict, doc_id, 1, list_data_without_stopwords, list_data_with_stopwords)
         SetDocIDAndPositions(term_dict, doc_id, 14, list_data_without_stopwords, list_data_with_stopwords)
-    print(term_dict)
+    # print(term_dict)
+    WriteFile(term_dict)
+
+
+
+def WriteFile(some_obj):
+    with open('positional_index.pickle', 'wb') as f:
+        pickle.dump(some_obj, f)
+
+
+def LoadFile(filename):
+    with open(filename, 'rb') as f:
+        loaded_obj = pickle.load(f)
+
+    # print('loaded_obj is', loaded_obj)

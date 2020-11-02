@@ -1,4 +1,6 @@
 import csv
+import pickle
+
 import nltk
 from nltk.stem import PorterStemmer
 from nltk.probability import FreqDist
@@ -14,7 +16,7 @@ def RemoveStopwordsAllEnglishFile(stop_words, list_data, filename):
     writer.writerow(list_data[0])
     for ld in list_data[1:]:
         ld = PreprocessLine(ld)
-        ld = RemoveStopwordLine(ld , stop_words)
+        ld = RemoveStopwordLine(ld, stop_words)
         writer.writerow(ld)
     filename.close()
 
@@ -29,6 +31,9 @@ def PreprocessAllEnglishFile(list_data, filename):
         writer.writerow(ld)
         all_english_tokens = all_english_tokens + ld[1] + ld[14]
     filename.close()
+    with open('outfile', 'wb') as fp:
+        pickle.dump(all_english_tokens, fp)
+
     return all_english_tokens
 
 

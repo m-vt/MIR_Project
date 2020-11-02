@@ -6,10 +6,31 @@ from nltk import word_tokenize
 from nltk.stem import PorterStemmer
 from nltk.probability import FreqDist
 import matplotlib.pyplot as plt
-
-nltk.download('punkt')
+from PreprocessEnglishText import PlotStopwords, RemoveStopwordsAllEnglishFile, PreprocessAllEnglishFile
+from PositionalIndexing import CreatePositionalIndex, WriteFile, LoadFile
+# from BigramIndexing import CreateBigramIndex
+from BigramIndexing import make_bigram_index
 import xmltodict
 
+
+# nltk.download('punkt')
+
+
+def ReadFile(filename):
+    filename = open(filename, 'r', newline='')
+    list_data = list(csv.reader(filename))
+    filename.close()
+    return list_data
+
+
+def PreprocessEnglishText():
+    list_data = ReadFile("ted_talks.csv")
+    all_english_tokens = PreprocessAllEnglishFile(list_data, "ted_talks_with_stopwords.csv")
+    stop_words = PlotStopwords(all_english_tokens)
+    list_data = ReadFile("ted_talks.csv")
+    RemoveStopwordsAllEnglishFile(stop_words, list_data, "ted_talk_without_stopwords.csv")
+#
+#
 # def clean_Persion_doc(doc):
 #     stemmer = Stemmer()
 #     lemmatizer = Lemmatizer()
@@ -41,10 +62,10 @@ import xmltodict
 #                 print(type(clean_text))
 #                 writer1.writerow(clean_text)
 #                 writer2.writerow(text)
-
-################################################################## find stopword
+#
+# # ################################################################## find stopword
 # fdist = FreqDist(All_persion_text)
-# most_common=fdist.most_common(40)
+# most_common = fdist.most_common(40)
 # stopwords_persion = []
 # for w in most_common:
 #     stopwords_persion.append(w[0])
@@ -55,68 +76,12 @@ import xmltodict
 # f.write(str(stopwords_persion))
 # f.close()
 
-#####################################################################
+# #####################################################################
+#
+PreprocessEnglishText()
+CreatePositionalIndex()
 
-Englishfile = open('ted_talks.csv', 'r', newline='')
-list_data = list(csv.reader(Englishfile))
-Englishfile.close()
+LoadFile("positional_index.pickle")
+make_bigram_index()
 
-All_English_token = []
-for ld in list_data[1:]:
-    tokenizer = nltk.RegexpTokenizer(r"\w+")
-    ps = PorterStemmer()
-    ld[1] = tokenizer.tokenize(ld[1])
-    ld[14] = tokenizer.tokenize(ld[14])
-    filtered_sent = []
-    ld[1] = [ps.stem(w) for w in ld[1]]
-    ld[14] = [ps.stem(w) for w in ld[14]]
-    All_English_token = All_English_token + ld[1] + ld[14]
-    # writer.writerow(ld)
-    # counter += 1
-    # if counter == 5:
-    #     break
-Englishfile.close()
 
-###################################################################### remove stopword
-
-fdist = FreqDist(All_English_token)
-most_common = fdist.most_common(30)
-stop_words = []
-for w in most_common:
-    stop_words.append(w[0])
-fdist.plot(30, cumulative=False)
-plt.show()
-
-print("stopword", stop_words)
-
-Englishfile = open('ted_talks.csv', 'r', newline='')
-list_data = list(csv.reader(Englishfile))
-Englishfile.close()
-
-Englishfile = open('ted_talks_modified.csv', 'w', newline='')
-writer = csv.writer(Englishfile)
-writer.writerow(list_data[0])
-counter = 0
-for ld in list_data[1:]:
-    tokenizer = nltk.RegexpTokenizer(r"\w+")
-    ps = PorterStemmer()
-    ld[1] = tokenizer.tokenize(ld[1])
-    ld[14] = tokenizer.tokenize(ld[14])
-    ld[1] = [ps.stem(w) for w in ld[1]]
-    ld[14] = [ps.stem(w) for w in ld[14]]
-    filtered_sent = []
-    print("ld[1] before ", ld[1])
-    for w in ld[1][:]:
-        if w in stop_words:
-            ld[1].remove(w)
-    for w in ld[14][:]:
-        if w in stop_words:
-            ld[14].remove(w)
-    print("ld[1] after ", ld[1])
-    writer.writerow(ld)
-
-    # counter += 1
-    # if counter == 5:
-    #     break
-
-Englishfile.close()
