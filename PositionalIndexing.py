@@ -8,46 +8,62 @@ def ReadFile(filename):
     filename.close()
     return list_data
 
+
 def ReadStrToList(linestr):
     linestr = linestr.replace("\'", "")
     linestr = linestr.replace("[", "")
     linestr = linestr.replace("]", "")
     return linestr.split(", ")
 
-def SetDocIDAndPositions(term_dict, doc_id, index_col, list_data_without_stopwords, list_data_with_stopwords):
-    list_data_without_stopwords[doc_id][index_col] = ReadStrToList(list_data_without_stopwords[doc_id][index_col])
-    list_data_with_stopwords[doc_id][index_col] = ReadStrToList(list_data_with_stopwords[doc_id][index_col])
-    for term1_id in range(len(list_data_without_stopwords[doc_id][index_col])):
+
+def SetDocIDAndPositions(term_dict, doc_id, list_without_stopwords, list_with_stopwords):
+    doc_dict = {}
+    for term1_id in range(len(list_without_stopwords)):
         positions = []
-        for term2_id in range(len(list_data_with_stopwords[doc_id][index_col])):
-            if list_data_with_stopwords[doc_id][index_col][term2_id] == list_data_without_stopwords[doc_id][index_col][term1_id]:
-                positions.append(term2_id + 1)
-        # print(list_data_without_stopwords[doc_id][index_col][term1_id] , positions)
-        if list_data_without_stopwords[doc_id][index_col][term1_id] not in term_dict.keys():
-            term_dict[list_data_without_stopwords[doc_id][index_col][term1_id]] = [[doc_id, positions]]
-        elif [doc_id, positions] not in term_dict[list_data_without_stopwords[doc_id][index_col][term1_id]]:
-            term_dict[list_data_without_stopwords[doc_id][index_col][term1_id]].append([doc_id, positions])
+        if list_without_stopwords[term1_id] not in doc_dict.keys():
+            for term2_id in range(len(list_with_stopwords)):
+                if list_without_stopwords[term1_id] == list_with_stopwords[term2_id]:
+                    positions.append(term2_id + 1)
+            doc_dict[list_without_stopwords[term1_id]] = [doc_id, positions]
+    for term_in_doc in doc_dict.keys():
+        if term_in_doc in term_dict.keys():
+            term_dict[term_in_doc].append(doc_dict[term_in_doc])
+        else:
+            term_dict[term_in_doc] = doc_dict[term_in_doc]
 
 
-def CreatePositionalIndex():
-    list_data_without_stopwords = ReadFile("ted_talk_without_stopwords.csv")
-    list_data_with_stopwords = ReadFile("ted_talks_with_stopwords.csv")
+def CreatePersianPositionalIndex():
+    persian_tokenized_file = open('./PersianFiles/persian_tokenized_text.pickle', 'rb')
+    persian_with_stopwords = pickle.load(persian_tokenized_file)
+    persian_without_stopwords = ReadFile("./PersianFiles/persian_without_stopwords.csv")
     term_dict = {}  # term : [[Docid , [Pos1 , ...] ], ... ]
-    for doc_id in range(1, len(list_data_with_stopwords)):
-        SetDocIDAndPositions(term_dict, doc_id, 1, list_data_without_stopwords, list_data_with_stopwords)
-        SetDocIDAndPositions(term_dict, doc_id, 14, list_data_without_stopwords, list_data_with_stopwords)
-    # print(term_dict)
-    WriteFile(term_dict)
+    for doc_id in range(len(persian_with_stopwords)):
+        SetDocIDAndPositions(term_dict, doc_id + 1, ReadStrToList(persian_without_stopwords[doc_id][0]),
+                             persian_with_stopwords[doc_id])
+    print("###")
+    WriteIndex(term_dict, "./PersianFiles/positional_index.pickle")
 
 
+def CreateEnglishPositionalIndex():
+    list_without_stopwords = ReadFile("./EnglishFiles/ted_talk_without_stopwords.csv")
+    list_with_stopwords = ReadFile("./EnglishFiles/ted_talks_with_stopwords.csv")
+    term_dict_description = {}  # term : [[Docid , [Pos1 , ...] ], ... ]
+    term_dict_title = {}  # term : [[Docid , [Pos1 , ...] ], ... ]
+    for doc_id in range(1, len(list_with_stopwords)):
+        SetDocIDAndPositions(term_dict_description, doc_id, ReadStrToList(list_without_stopwords[doc_id][1]),
+                             ReadStrToList(list_with_stopwords[doc_id][1]))
+        SetDocIDAndPositions(term_dict_title, doc_id, ReadStrToList(list_without_stopwords[doc_id][14]),
+                             ReadStrToList(list_with_stopwords[doc_id][14]))
+    WriteIndex(term_dict_description, "./EnglishFiles/positional_index_description.pickle")
+    WriteIndex(term_dict_title, "./EnglishFiles/positional_index_title.pickle")
 
-def WriteFile(some_obj):
-    with open('positional_index.pickle', 'wb') as f:
-        pickle.dump(some_obj, f)
+
+def WriteIndex(term_dict, address):
+    with open(address, 'wb') as f:
+        pickle.dump(term_dict, f)
 
 
-def LoadFile(filename):
+def LoadPositionalIndex(filename):
     with open(filename, 'rb') as f:
-        loaded_obj = pickle.load(f)
-
-    # print('loaded_obj is', loaded_obj)
+        positional_index = pickle.load(f)
+    return positional_index
