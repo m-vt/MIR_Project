@@ -8,6 +8,13 @@ import xmltodict
 import csv
 
 
+def ReadFile(filename):
+    filename = open(filename, 'r', newline='')
+    list_data = list(csv.reader(filename))
+    filename.close()
+    return list_data
+
+
 def CleanPersionDoc(doc):
     stemmer = Stemmer()
     lemmatizer = Lemmatizer()
@@ -20,7 +27,7 @@ def CleanPersionDoc(doc):
     return lemmatized
 
 
-def PreprocessAllPersianFile():
+def Preprocess():
     st = time.time()
     all_persion_tokens = []
     persion_file = open('./PersianFiles/Persian.xml')
@@ -32,7 +39,6 @@ def PreprocessAllPersianFile():
         persian_tokenized_text[i] = clean_text
     with open('./PersianFiles/persian_tokenized_text.pickle', 'wb') as f:
         pickle.dump(persian_tokenized_text, f)
-    print(time.time() - st)
     return all_persion_tokens
 
 
@@ -66,6 +72,7 @@ def RemoveStopwordDoc(doc, stop_words, csv_file):
         if token in stop_words:
             doc.remove(token)
     writer1.writerow([list(doc)])
+    return doc
 
 
 def RemoveStopwordsAllPersianFile():
@@ -77,7 +84,15 @@ def RemoveStopwordsAllPersianFile():
         RemoveStopwordDoc(persian_tokenized_file[doc_id], stop_words, persian_remove_stopwords_file)
 
 
-def PreprocessPersianText():
-    all_persion_tokens = PreprocessAllPersianFile()
+def PreprocessPersianText(doc):
+    clean_text = list(CleanPersionDoc(doc['mediawiki']['page']['revision']['text']['#text']))
+    persian_remove_stopwords_file = open('./PersianFiles/persian_without_stopwords.csv', 'a', newline='')
+    doc_without_stopwords = RemoveStopwordDoc(clean_text, GetStopwords(), persian_remove_stopwords_file)
+    return doc_without_stopwords , clean_text
+
+
+def PreprocessAllPersianFile():
+    all_persion_tokens = Preprocess()
     PlotPersianStopwords(all_persion_tokens)
     RemoveStopwordsAllPersianFile()
+

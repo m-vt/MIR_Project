@@ -29,7 +29,7 @@ def SetDocIDAndPositions(term_dict, doc_id, list_without_stopwords, list_with_st
         if term_in_doc in term_dict.keys():
             term_dict[term_in_doc].append(doc_dict[term_in_doc])
         else:
-            term_dict[term_in_doc] = doc_dict[term_in_doc]
+            term_dict[term_in_doc] = [doc_dict[term_in_doc]]
 
 
 def CreatePersianPositionalIndex():
@@ -40,7 +40,6 @@ def CreatePersianPositionalIndex():
     for doc_id in range(len(persian_with_stopwords)):
         SetDocIDAndPositions(term_dict, doc_id + 1, ReadStrToList(persian_without_stopwords[doc_id][0]),
                              persian_with_stopwords[doc_id])
-    print("###")
     WriteIndex(term_dict, "./PersianFiles/positional_index.pickle")
 
 
@@ -67,3 +66,26 @@ def LoadPositionalIndex(filename):
     with open(filename, 'rb') as f:
         positional_index = pickle.load(f)
     return positional_index
+
+
+def AddPositionalIndexForNewDoc(term_dict , doc_id, list_without_stopwords, list_with_stopwords, address):
+    SetDocIDAndPositions(term_dict, doc_id, list_without_stopwords, list_with_stopwords)
+    WriteIndex(term_dict, address)
+
+
+def AddPositionalIndexForNewDoc2(doc_id, list_without_stopwords, list_with_stopwords, address):
+    term_dict = LoadPositionalIndex("./PersianFiles/persian_tokenized_text.pickle")
+    SetDocIDAndPositions(term_dict, doc_id, list_without_stopwords, list_with_stopwords)
+
+
+def DeletePositionalIndexForNewDoc(term_dict, doc_id, list_without_stopwords, address):
+    for term in list_without_stopwords:
+        for doc_index in term_dict[term]:
+            if doc_index[0] == doc_id:
+                term_dict[term].remove(doc_index)
+        # if term_dict[term] == []:
+        #     del term_dict[term]
+    if address == 1:
+        WriteIndex(term_dict, "./EnglishFiles/positional_index_description.pickle")
+    else:
+        WriteIndex(term_dict, "./EnglishFiles/positional_index_title.pickle")

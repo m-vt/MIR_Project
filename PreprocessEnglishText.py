@@ -30,7 +30,7 @@ def RemoveStopwordsAllEnglishFile(stop_words):
     filename.close()
 
 
-def PreprocessAllEnglishFile():
+def Preprocess():
     list_data = ReadFile("./EnglishFiles/ted_talks.csv")
     filename = open("./EnglishFiles/ted_talks_with_stopwords.csv", 'w', newline='')
     writer = csv.writer(filename)
@@ -52,7 +52,11 @@ def PlotEnglishStopwords(all_english_tokens):
         stop_words.append(w[0])
     fdist.plot(30, cumulative=False)
     plt.show()
+    f = open("./EnglishFiles/stopwords_english.txt", "a")
+    f.write(str(stop_words))
+    f.close()
     return stop_words
+
 
 
 def PreprocessDoc(doc):
@@ -74,8 +78,52 @@ def RemoveStopwordDoc(doc, stop_words):
             doc[14].remove(w)
     return doc
 
+def GetStopwords():
+    f = open("./EnglishFiles/stopwords_english.txt", "r")
+    stop_words = f.read()
+    stop_words = stop_words.replace('\'', '')
+    stop_words = stop_words.replace('[', '')
+    stop_words = stop_words.replace(']', '')
+    stop_words = stop_words.replace(' ', '')
+    stop_words = stop_words.split(",")
+    return stop_words
 
-def PreprocessEnglishText():
-    all_english_tokens = PreprocessAllEnglishFile()
+def PreprocessAllEnglishFile():
+    all_english_tokens = Preprocess()
     stop_words = PlotEnglishStopwords(all_english_tokens)
     RemoveStopwordsAllEnglishFile(stop_words)
+
+
+def PreprocessEnglishText(doc  ):
+    preprocessed_doc = PreprocessDoc(doc)
+    doc_with_stopwords_desription = preprocessed_doc[1][:]
+    doc_with_stopwords_title = preprocessed_doc[14][:]
+    doc_without_stopwords = RemoveStopwordDoc(preprocessed_doc, GetStopwords() )
+    return doc_without_stopwords , doc_with_stopwords_desription , doc_with_stopwords_title
+
+
+
+def AddEnglishDoc(doc_without_stopwords):
+    filename = open("./EnglishFiles/ted_talk_without_stopwords.csv", 'a', newline='')
+    writer = csv.writer(filename)
+    writer.writerow(doc_without_stopwords)
+    filename.close()
+    list_data = ReadFile("./EnglishFiles/ted_talk_without_stopwords.csv")
+    return len(list_data)
+
+
+def DeleteEnglishDoc(doc):
+    list_data = ReadFile("./EnglishFiles/ted_talk_without_stopwords.csv")
+    lines = list()
+    doc_id = -1
+    for ld in range(1, len(list_data)):
+        if list_data[ld][7] != doc[7]:
+            lines.append(list_data[ld])
+        else:
+            doc_id = ld
+    writeFile = open('./EnglishFiles/new_ted_talks.csv', 'w')
+    writer = csv.writer(writeFile)
+    writer.writerow(list_data[0])
+    writer.writerows(lines)
+    return doc_id + 1
+
