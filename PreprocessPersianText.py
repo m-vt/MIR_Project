@@ -37,6 +37,8 @@ def Preprocess():
         clean_text = list(CleanPersionDoc(doc['mediawiki']['page'][i]['revision']['text']['#text']))
         all_persion_tokens = all_persion_tokens + clean_text
         persian_tokenized_text[i] = clean_text
+    with open('./PersianFiles/AllPersionToken', 'wb') as filehandle:
+        pickle.dump(all_persion_tokens, filehandle)
     with open('./PersianFiles/persian_tokenized_text.pickle', 'wb') as f:
         pickle.dump(persian_tokenized_text, f)
     return all_persion_tokens

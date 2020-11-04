@@ -18,6 +18,8 @@ def AddEnglishDocument(doc):
     AddPositionalIndexForNewDoc(term_dict , doc_id, doc_without_stopwords_desp[14], doc_with_stopwords_title, "./EnglishFiles/positional_index_title.pickle")
 
 
+
+
 def DeleteEnglishDocument(doc):
     doc_id = DeleteEnglishDoc(doc)
     doc_without_stopwords , _ , _= PreprocessEnglishText(doc )
@@ -30,12 +32,16 @@ def DeleteEnglishDocument(doc):
 
 
 
-# PreprocessAllEng lishFile()
+
+
+
+# PreprocessAllEnglishFile()
 # CreateEnglishPositionalIndex()
 # english_positional_index= LoadPositionalIndex("./EnglishFiles/positional_index.pickle")
 # print(english_positional_index)
 
 # PreprocessPersianText()
+PreprocessAllPersianFile()
 # CreatePersianPositionalIndex()
 # persian_positional_index = LoadPositionalIndex("./PersianFiles/positional_index.pickle")
 # print(persian_positional_index)

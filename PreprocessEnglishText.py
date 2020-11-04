@@ -1,4 +1,6 @@
 import csv
+import pickle
+
 import nltk
 from nltk.stem import PorterStemmer
 from nltk.probability import FreqDist
@@ -40,6 +42,9 @@ def Preprocess():
         ld = PreprocessDoc(ld)
         writer.writerow(ld)
         all_english_tokens = all_english_tokens + ld[1] + ld[14]
+    with open('./EnglishFiles/AllEnglishToken', 'wb') as filehandle:
+        # store the data as binary data stream
+        pickle.dump(all_english_tokens, filehandle)
     filename.close()
     return all_english_tokens
 
