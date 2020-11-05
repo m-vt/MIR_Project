@@ -19,16 +19,18 @@ def ReadFile(filename):
 def RemoveStopwordsAllEnglishFile(stop_words):
     list_data = ReadFile("./EnglishFiles/ted_talks.csv")
     filename = open("./EnglishFiles/ted_talk_without_stopwords.csv", 'w', newline='')
-    ted_talk_terms = open("./EnglishFiles/ted_talk_terms.csv", 'w', newline='')
+    # ted_talk_terms = open("./EnglishFiles/ted_talk_terms.csv", 'w', newline='')
     writer = csv.writer(filename)
-    writer2 = csv.writer(ted_talk_terms)
+    # writer2 = csv.writer(ted_talk_terms)
+    list_data[0].insert(0, "docid")
     writer.writerow(list_data[0])
-    for ld in list_data[1:]:
-        ld = PreprocessDoc(ld)
-        ld = RemoveStopwordDoc(ld , stop_words)
-        doc_terms = ld[1] + ld[14]
-        writer.writerow(ld)
-        writer2.writerow([doc_terms])
+    for ld_id in range(1, len(list_data)):
+        list_data[ld_id] = PreprocessDoc(list_data[ld_id])
+        list_data[ld_id] = RemoveStopwordDoc(list_data[ld_id], stop_words)
+        # doc_terms = ld[1] + ld[14]
+        list_data[ld_id].insert(0, ld_id)
+        writer.writerow(list_data[ld_id])
+        # writer2.writerow([doc_terms])
     filename.close()
 
 
@@ -36,14 +38,15 @@ def Preprocess():
     list_data = ReadFile("./EnglishFiles/ted_talks.csv")
     filename = open("./EnglishFiles/ted_talks_with_stopwords.csv", 'w', newline='')
     writer = csv.writer(filename)
+    list_data[0].insert(0, "docid")
     writer.writerow(list_data[0])
     all_english_tokens = []
-    for ld in list_data[1:]:
-        ld = PreprocessDoc(ld)
-        writer.writerow(ld)
-        all_english_tokens = all_english_tokens + ld[1] + ld[14]
+    for ld_id in range(1, len(list_data)):
+        list_data[ld_id] = PreprocessDoc(list_data[ld_id])
+        all_english_tokens = all_english_tokens + list_data[ld_id][1] + list_data[ld_id][14]
+        list_data[ld_id].insert(0, ld_id)
+        writer.writerow(list_data[ld_id])
     with open('./EnglishFiles/AllEnglishToken', 'wb') as filehandle:
-        # store the data as binary data stream
         pickle.dump(all_english_tokens, filehandle)
     filename.close()
     return all_english_tokens
@@ -61,7 +64,6 @@ def PlotEnglishStopwords(all_english_tokens):
     f.write(str(stop_words))
     f.close()
     return stop_words
-
 
 
 def PreprocessDoc(doc):
@@ -83,6 +85,7 @@ def RemoveStopwordDoc(doc, stop_words):
             doc[14].remove(w)
     return doc
 
+
 def GetStopwords():
     f = open("./EnglishFiles/stopwords_english.txt", "r")
     stop_words = f.read()
@@ -93,42 +96,43 @@ def GetStopwords():
     stop_words = stop_words.split(",")
     return stop_words
 
+
 def PreprocessAllEnglishFile():
     all_english_tokens = Preprocess()
     stop_words = PlotEnglishStopwords(all_english_tokens)
     RemoveStopwordsAllEnglishFile(stop_words)
 
 
-def PreprocessEnglishText(doc  ):
+def PreprocessEnglishText(doc):
     preprocessed_doc = PreprocessDoc(doc)
     doc_with_stopwords_desription = preprocessed_doc[1][:]
     doc_with_stopwords_title = preprocessed_doc[14][:]
-    doc_without_stopwords = RemoveStopwordDoc(preprocessed_doc, GetStopwords() )
-    return doc_without_stopwords , doc_with_stopwords_desription , doc_with_stopwords_title
-
+    doc_without_stopwords = RemoveStopwordDoc(preprocessed_doc, GetStopwords())
+    return doc_without_stopwords, doc_with_stopwords_desription, doc_with_stopwords_title
 
 
 def AddEnglishDoc(doc_without_stopwords):
+    list_data = ReadFile("./EnglishFiles/ted_talk_without_stopwords.csv")
+    doc_id = len(list_data)
     filename = open("./EnglishFiles/ted_talk_without_stopwords.csv", 'a', newline='')
     writer = csv.writer(filename)
+    doc_without_stopwords.insert(0 , doc_id)
     writer.writerow(doc_without_stopwords)
     filename.close()
-    list_data = ReadFile("./EnglishFiles/ted_talk_without_stopwords.csv")
-    return len(list_data)
+    return doc_id
 
 
-def DeleteEnglishDoc(doc):
+def DeleteEnglishDoc(doc_id):
     list_data = ReadFile("./EnglishFiles/ted_talk_without_stopwords.csv")
     lines = list()
-    doc_id = -1
+    doc = "NO DOC_ID MATCHED!"
     for ld in range(1, len(list_data)):
-        if list_data[ld][7] != doc[7]:
+        if list_data[ld][0] != str(doc_id):
             lines.append(list_data[ld])
         else:
-            doc_id = ld
-    writeFile = open('./EnglishFiles/new_ted_talks.csv', 'w')
+            doc = list_data[ld]
+    writeFile = open("./EnglishFiles/ted_talk_without_stopwords.csv", 'w')
     writer = csv.writer(writeFile)
     writer.writerow(list_data[0])
     writer.writerows(lines)
-    return doc_id + 1
-
+    return doc
