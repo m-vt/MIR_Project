@@ -1,7 +1,7 @@
 import csv
 import pickle
 
-from PreprocessEnglishText import  PreprocessEnglishText, AddEnglishDoc, DeleteEnglishDoc
+from PreprocessEnglishText import  PreprocessEnglishDoc, AddEnglishDoc, DeleteEnglishDoc
 from PreprocessPersianText import  PreprocessPersianText, AddPersianDoc, DeletePersianDoc
 
 
@@ -39,7 +39,6 @@ def SetDocIDAndPositions(term_dict, doc_id, list_without_stopwords, list_with_st
         else:
             term_dict[term_in_doc] = [doc_dict[term_in_doc]]
 
-
 def CreatePersianPositionalIndex():
     persian_tokenized_file = open('./PersianFiles/persian_tokenized_text.pickle', 'rb')
     persian_with_stopwords = pickle.load(persian_tokenized_file)
@@ -56,13 +55,19 @@ def CreateEnglishPositionalIndex():
     list_with_stopwords = ReadFile("./EnglishFiles/ted_talks_with_stopwords.csv")
     term_dict_description = {}  # term : [[Docid , [Pos1 , ...] ], ... ]
     term_dict_title = {}  # term : [[Docid , [Pos1 , ...] ], ... ]
+    term_dict_total = {}
     for doc_id in range(1, len(list_with_stopwords)):
-        SetDocIDAndPositions(term_dict_description, doc_id, ReadStrToList(list_without_stopwords[doc_id][2]),
-                             ReadStrToList(list_with_stopwords[doc_id][2]))
-        SetDocIDAndPositions(term_dict_title, doc_id, ReadStrToList(list_without_stopwords[doc_id][15]),
-                             ReadStrToList(list_with_stopwords[doc_id][15]))
-    WriteIndex(term_dict_description, "./EnglishFiles/positional_index_description.pickle")
-    WriteIndex(term_dict_title, "./EnglishFiles/positional_index_title.pickle")
+        total_list_without_stopword = ReadStrToList(list_without_stopwords[doc_id][2]) + ReadStrToList(list_without_stopwords[doc_id][15])
+        total_list_with_stopword = ReadStrToList(list_with_stopwords[doc_id][2]) + ReadStrToList(list_with_stopwords[doc_id][15])
+        # SetDocIDAndPositions(term_dict_description, doc_id, ReadStrToList(list_without_stopwords[doc_id][2]),
+        #                      ReadStrToList(list_with_stopwords[doc_id][2]))
+        # SetDocIDAndPositions(term_dict_title, doc_id, ReadStrToList(list_without_stopwords[doc_id][15]),
+        #                      ReadStrToList(list_with_stopwords[doc_id][15]))
+        SetDocIDAndPositions(term_dict_total, doc_id, total_list_without_stopword,
+                             total_list_with_stopword)
+    # WriteIndex(term_dict_description, "./EnglishFiles/positional_index_description.pickle")
+    # WriteIndex(term_dict_title, "./EnglishFiles/positional_index_title.pickle")
+    WriteIndex(term_dict_total, "./EnglishFiles/positional_index.pickle")
 
 
 def WriteIndex(term_dict, address):
@@ -103,7 +108,7 @@ def AddPersianDocument(doc):
 
 
 def AddEnglishDocument(doc):
-    doc_without_stopwords, doc_with_stopwords_desp, doc_with_stopwords_title = PreprocessEnglishText(doc)
+    doc_without_stopwords, doc_with_stopwords_desp, doc_with_stopwords_title = PreprocessEnglishDoc(doc)
     doc_id = AddEnglishDoc(doc_without_stopwords)
     term_dict = LoadPositionalIndex(positional_index_description_address)
     AddPositionalIndexForNewDoc(term_dict, doc_id, doc_without_stopwords[2], doc_with_stopwords_desp,

@@ -19,18 +19,14 @@ def ReadFile(filename):
 def RemoveStopwordsAllEnglishFile(stop_words):
     list_data = ReadFile("./EnglishFiles/ted_talks.csv")
     filename = open("./EnglishFiles/ted_talk_without_stopwords.csv", 'w', newline='')
-    # ted_talk_terms = open("./EnglishFiles/ted_talk_terms.csv", 'w', newline='')
     writer = csv.writer(filename)
-    # writer2 = csv.writer(ted_talk_terms)
     list_data[0].insert(0, "docid")
     writer.writerow(list_data[0])
     for ld_id in range(1, len(list_data)):
         list_data[ld_id] = PreprocessDoc(list_data[ld_id])
         list_data[ld_id] = RemoveStopwordDoc(list_data[ld_id], stop_words)
-        # doc_terms = ld[1] + ld[14]
         list_data[ld_id].insert(0, ld_id)
         writer.writerow(list_data[ld_id])
-        # writer2.writerow([doc_terms])
     filename.close()
 
 
@@ -98,12 +94,13 @@ def GetStopwords():
 
 
 def PreprocessAllEnglishFile():
+    AddDocidToTed()
     all_english_tokens = Preprocess()
     stop_words = PlotEnglishStopwords(all_english_tokens)
     RemoveStopwordsAllEnglishFile(stop_words)
 
 
-def PreprocessEnglishText(doc):
+def PreprocessEnglishDoc(doc):
     preprocessed_doc = PreprocessDoc(doc)
     doc_with_stopwords_desription = preprocessed_doc[1][:]
     doc_with_stopwords_title = preprocessed_doc[14][:]
@@ -116,7 +113,7 @@ def AddEnglishDoc(doc_without_stopwords):
     doc_id = len(list_data)
     filename = open("./EnglishFiles/ted_talk_without_stopwords.csv", 'a', newline='')
     writer = csv.writer(filename)
-    doc_without_stopwords.insert(0 , doc_id)
+    doc_without_stopwords.insert(0, doc_id)
     writer.writerow(doc_without_stopwords)
     filename.close()
     return doc_id
@@ -136,3 +133,36 @@ def DeleteEnglishDoc(doc_id):
     writer.writerow(list_data[0])
     writer.writerows(lines)
     return doc
+
+
+def PreprocessEnglishQuery(query):
+    preprocessed_query = PreprocessQuery(query)
+    query_without_stopwords = RemoveStopwordQuery(preprocessed_query, GetStopwords())
+    return query_without_stopwords
+
+
+def PreprocessQuery(query):
+    tokenizer = nltk.RegexpTokenizer(r"\w+")
+    ps = PorterStemmer()
+    query = tokenizer.tokenize(query)
+    query = [ps.stem(w) for w in query]
+    return query
+
+
+def RemoveStopwordQuery(query, stop_words):
+    for w in query:
+        if w in stop_words:
+            query.remove(w)
+    return query
+
+
+def AddDocidToTed():
+    list_data = ReadFile("./EnglishFiles/ted_talks.csv")
+    ted_talk = open("./EnglishFiles/ted_talks.csv", 'w', newline='')
+    writer = csv.writer(ted_talk)
+    list_data[0].insert(0, "docid")
+    writer.writerow(list_data[0])
+    for ld_id in range(1, len(list_data)):
+        list_data[ld_id].insert(0, ld_id)
+        writer.writerow(list_data[ld_id])
+    ted_talk.close()

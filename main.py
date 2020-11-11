@@ -1,16 +1,20 @@
-import csv
+import operator
 import time
 
-import xmltodict
-
-from PreprocessEnglishText import PreprocessAllEnglishFile
+from PreprocessEnglishText import PreprocessAllEnglishFile, PreprocessEnglishQuery
 from PreprocessPersianText import PreprocessAllPersianFile
 from PositionalIndexing import *
+from Search import *
 
-# nltk.download('punkt')
 positional_index_description_address = "./EnglishFiles/positional_index_description.pickle"
 positional_index_title_address = "./EnglishFiles/positional_index_title.pickle"
+positional_index_english_address = "./EnglishFiles/positional_index.pickle"
 positional_index_persian_address = "./PersianFiles/positional_index.pickle"
+
+
+def GetNumberOfDocs(filename):
+    list_data = ReadFile(filename)
+    return len(list_data)
 
 
 ####################### preprocess english :
@@ -18,6 +22,7 @@ positional_index_persian_address = "./PersianFiles/positional_index.pickle"
 
 ####################### positionl index :
 # CreateEnglishPositionalIndex()
+
 
 ####################### add doc + positionl index :
 # new_english_doc = ['4577',
@@ -33,7 +38,7 @@ positional_index_persian_address = "./PersianFiles/positional_index.pickle"
 # AddEnglishDocument(new_english_doc)
 
 
-# ####################### delete doc + positionl index :
+####################### delete doc + positionl index :
 # deleted_docid = 2
 # DeleteEnglishDocument(deleted_docid)
 
@@ -44,14 +49,45 @@ positional_index_persian_address = "./PersianFiles/positional_index.pickle"
 # ####################### positional index persian :
 # CreatePersianPositionalIndex()
 #
-# ####################### add to positional + doc :
+####################### add to positional + doc :
 # new_persion_file = open('./PersianFiles/new_persian_doc.xml')
 # doc = xmltodict.parse(new_persion_file.read())
 # AddPersianDocument(doc)
 #
-# ####################### delete to positional + doc :
+####################### delete to positional + doc :
 # deleted_docid = 1
 # DeletePersianDocument(deleted_docid)
 
+####################### English Query
+# query = input("query : ")
+# # sir is the best and in the world I do love him sir google sir
+# query_terms = PreprocessEnglishQuery(query)
+# total_number_of_docs = GetNumberOfDocs("./EnglishFiles/ted_talk_without_stopwords.csv")
+# positional_index = LoadPositionalIndex(positional_index_english_address)
+# tf_idf_query = CreateTF_IDFquery(query_terms, total_number_of_docs, positional_index)
+# weights = Search(tf_idf_query, total_number_of_docs, positional_index)
+# docids = [str(doc[0]) for doc in sorted(weights.items(), key=operator.itemgetter(1), reverse=True)[:10]]
+# list_data = ReadFile("./EnglishFiles/ted_talks.csv")
+# for docid in docids:
+#     for data in list_data:
+#         if data[0] == docid:
+#             print(data[0])
+
+
+
+# query = input("query : ")
+# # مهارت‌های من در مهارت او است و ما با کیفیت تمام این کار را می‌ کنیم
+# query_terms , _ = PreprocessPersianText(query)
+# total_number_of_docs = GetNumberOfDocs("./PersianFiles/persian_without_stopwords.csv")
+# positional_index = LoadPositionalIndex(positional_index_persian_address)
+# tf_idf_query = CreateTF_IDFquery(query_terms, total_number_of_docs, positional_index)
+# weights = Search(tf_idf_query, total_number_of_docs, positional_index)
+# docids = [str(doc[0]) for doc in sorted(weights.items(), key=operator.itemgetter(1), reverse=True)[:10]]
+########################### TODO : write results
+# list_data = ReadFile("???")
+# for docid in docids:
+#     for data in list_data:
+#         if data[0] == docid:
+#             print(data[0])
 
 # make_bigram_index()

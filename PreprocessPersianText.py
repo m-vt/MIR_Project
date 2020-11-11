@@ -121,4 +121,3 @@ def PreprocessAllPersianFile():
     PlotPersianStopwords(all_persion_tokens)
     RemoveStopwordsAllPersianFile()
 
-
