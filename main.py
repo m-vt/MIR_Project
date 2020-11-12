@@ -5,6 +5,8 @@ from PreprocessEnglishText import PreprocessAllEnglishFile, PreprocessEnglishQue
 from PreprocessPersianText import PreprocessAllPersianFile
 from PositionalIndexing import *
 from Search import *
+from BigramIndexing import *
+from SpellCorrect import *
 
 positional_index_description_address = "./EnglishFiles/positional_index_description.pickle"
 positional_index_title_address = "./EnglishFiles/positional_index_title.pickle"
@@ -35,16 +37,21 @@ def GetNumberOfDocs(filename):
 #                    "['children', 'creativity', 'culture', 'dance', 'education', 'parenting', 'teaching']",
 #                    'Do schools kill creativity?',
 #                    'https://www.ted.com/talks/ken_robinson_says_schools_kill_creativity\n', '47227110']
-# AddEnglishDocument(new_english_doc)
+# all_token_English=AddEnglishDocument(new_english_doc)
+# add_new_doc_bigram_English(all_token)
+
+
+
 
 
 ####################### delete doc + positionl index :
 # deleted_docid = 2
-# DeleteEnglishDocument(deleted_docid)
+# all_token_English=DeleteEnglishDocument(deleted_docid)
+#delete_new_doc_bigram_English(all_token_English)
 
 
 ####################### preprocess persian :
-# PreprocessAllPersianFile()
+PreprocessAllPersianFile()
 #
 # ####################### positional index persian :
 # CreatePersianPositionalIndex()
@@ -52,18 +59,22 @@ def GetNumberOfDocs(filename):
 ####################### add to positional + doc :
 # new_persion_file = open('./PersianFiles/new_persian_doc.xml')
 # doc = xmltodict.parse(new_persion_file.read())
-# AddPersianDocument(doc)
-#
+# all_persion_token = AddPersianDocument(doc)
+#add_new_doc_bigram_persion(all_persion_token)
 ####################### delete to positional + doc :
 # deleted_docid = 1
-# DeletePersianDocument(deleted_docid)
+# all_persion_token = DeletePersianDocument(deleted_docid)
+#add_new_doc_bigram_persion(all_persion_token)
 
 ####################### English Query
+# with open('./EnglishFiles/bigram.pickle', 'rb') as handle:
+#     dict_English = pickle.load(handle)
 # query = input("query : ")
 # # sir is the best and in the world I do love him sir google sir
 # query_terms = PreprocessEnglishQuery(query)
 # total_number_of_docs = GetNumberOfDocs("./EnglishFiles/ted_talk_without_stopwords.csv")
 # positional_index = LoadPositionalIndex(positional_index_english_address)
+
 # tf_idf_query = CreateTF_IDFquery(query_terms, total_number_of_docs, positional_index)
 # weights = Search(tf_idf_query, total_number_of_docs, positional_index)
 # docids = [str(doc[0]) for doc in sorted(weights.items(), key=operator.itemgetter(1), reverse=True)[:10]]
@@ -74,12 +85,15 @@ def GetNumberOfDocs(filename):
 #             print(data[0])
 
 
-
+# with open('./PersianFiles//bigram.pickle', 'rb') as handle:
+#     dict_Persion = pickle.load(handle)
+# query = input("query : ")
 # query = input("query : ")
 # # مهارت‌های من در مهارت او است و ما با کیفیت تمام این کار را می‌ کنیم
 # query_terms , _ = PreprocessPersianText(query)
 # total_number_of_docs = GetNumberOfDocs("./PersianFiles/persian_without_stopwords.csv")
 # positional_index = LoadPositionalIndex(positional_index_persian_address)
+
 # tf_idf_query = CreateTF_IDFquery(query_terms, total_number_of_docs, positional_index)
 # weights = Search(tf_idf_query, total_number_of_docs, positional_index)
 # docids = [str(doc[0]) for doc in sorted(weights.items(), key=operator.itemgetter(1), reverse=True)[:10]]

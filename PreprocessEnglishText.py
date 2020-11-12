@@ -94,10 +94,10 @@ def GetStopwords():
 
 
 def PreprocessAllEnglishFile():
-    AddDocidToTed()
     all_english_tokens = Preprocess()
     stop_words = PlotEnglishStopwords(all_english_tokens)
     RemoveStopwordsAllEnglishFile(stop_words)
+    AddDocidToTed()
 
 
 def PreprocessEnglishDoc(doc):

@@ -28,8 +28,8 @@ def make_bigram_index_Persion():
     item_list_persion = list(item_list_persion)
     for i in range(len(item_list_persion)):
         bigram_one_word(item_list_persion[i], dict_persion)
-        if i == 10:
-            break
+        # if i == 1000:
+        #     break
     with open('./PersianFiles/bigram.pickle', 'wb') as handle:
         pickle.dump(dict_persion, handle, protocol=pickle.HIGHEST_PROTOCOL)
     print(dict_persion)
@@ -110,8 +110,8 @@ def delete_bigram_oneWord(word, dict):
 
 
 
-# make_bigram_index_English()
-# make_bigram_index_Persion()
+make_bigram_index_English()
+make_bigram_index_Persion()
 # list = ['sir']
 # list1 = ['زیزی']
 #

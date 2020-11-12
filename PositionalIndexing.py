@@ -105,6 +105,7 @@ def AddPersianDocument(doc):
     term_dict = LoadPositionalIndex(positional_index_persian_address)
     AddPositionalIndexForNewDoc(term_dict, doc_id, doc_without_stopwords, doc_with_stopwords,
                                 positional_index_persian_address)
+    return doc_without_stopwords
 
 
 def AddEnglishDocument(doc):
@@ -116,6 +117,8 @@ def AddEnglishDocument(doc):
     term_dict = LoadPositionalIndex(positional_index_title_address)
     AddPositionalIndexForNewDoc(term_dict, doc_id, doc_without_stopwords[15], doc_with_stopwords_title,
                                 positional_index_title_address)
+    return doc_without_stopwords[2] + doc_without_stopwords[15]
+
 
 
 def DeleteEnglishDocument(doc_id):
@@ -128,6 +131,7 @@ def DeleteEnglishDocument(doc_id):
         DeletePositionalIndexForNewDoc(positional_index_title, doc_id, doc[15], positional_index_title_address)
     else:
         print(doc)
+    return doc[2] + doc[15]
 
 
 def DeletePersianDocument(doc_id):
@@ -137,3 +141,4 @@ def DeletePersianDocument(doc_id):
         DeletePositionalIndexForNewDoc(positional_index_persian, doc_id, doc[1], positional_index_persian_address)
     else:
         print(doc)
+    return doc[1]
