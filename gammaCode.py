@@ -1,8 +1,19 @@
 # Python3 implementation
 import sys
 from math import log
+from struct import pack, unpack
+from bitstring import BitArray
+
 
 log2 = lambda x: log(x, 2)
+
+def bitstring_to_bytes(s):
+    v = int(s, 2)
+    b = bytearray()
+    while v:
+        b.append(v & 0xff)
+        v >>= 8
+    return bytes(b[::-1])
 
 
 def Unary(x):
@@ -14,7 +25,7 @@ def Binary(x, l=1):
     return s.format(x)
 
 
-def Elias_Gamma(x):
+def encode_Gamma(x):
     if (x == 0):
         return '0'
 
@@ -23,21 +34,40 @@ def Elias_Gamma(x):
 
     l = int(log2(x))
 
-    return Unary(n) + Binary(b, l)
+    return bitstring_to_bytes(Unary(n) + Binary(b, l))
 
-def GammaCode(numbers):
-    bytes_list = []
-    for number in numbers:
-        bytes_list.append(Elias_Gamma(number).encode())
-    return b"".join(bytes_list)
+def decode_Gamma(bytes):
+    a = ''.join(format(byte, '08b') for byte in bytes)
+
+    counter=0
+    pointer=0
+    flag=False
+    for i in a:
+        if flag:
+            counter += 1
+            if i=='0':
+                break
+        else:
+            if i =='1':
+                flag=True
+            else:
+                pointer += 1
+
+    number="1"+a[pointer+counter+1:]
+
+    return int(number, 2)
 
 
-input=[824,5,214577,824,5,214577824,5,214577824,5,214577824,5,214577824,5,214577824,5,214577824,5,214577824,5,214577824,5,214577824,5,214577]
-out=GammaCode(input)
+
+
+
+
+
+out=encode_Gamma(1025)
 print(out)
-#out2=out.encode()
-print("size before", sys.getsizeof(input))
+print(decode_Gamma(out))
+
+print("size before", sys.getsizeof(1025))
 print("size after", sys.getsizeof(out))
-#print(type(out2))
-#print(out2)
-#print("size after", sys.getsizeof(out2))
+
+

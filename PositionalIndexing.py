@@ -10,7 +10,7 @@ positional_index_persian_address = "./PersianFiles/positional_index.pickle"
 
 
 def ReadFile(filename):
-    csv.field_size_limit(sys.maxsize)
+    #csv.field_size_limit(sys.maxsize)
     filename = open(filename, 'r', newline='')
     list_data = list(csv.reader(filename))
     filename.close()

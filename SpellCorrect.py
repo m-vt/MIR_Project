@@ -21,9 +21,9 @@ stop_words = stop_words.replace(']', '')
 stop_words = stop_words.replace(' ', '')
 stop_words = stop_words.split(",")
 
-print(stop_words[1])
-print(stop_words)
-print(type(stop_words))
+# print(stop_words[1])
+# print(stop_words)
+# print(type(stop_words))
 
 text_file1 = open('./PersianFiles/stopwords_persion.txt',"r")
 stop_words_persion = text_file1.read()
@@ -63,9 +63,9 @@ def getQueryAndReturnCorrectPersion(query):
     correct_query = {}
     correct_query_string = ""
     mistake_query_string = ""
-    print(",,,,,",query)
+    # print(",,,,,",query)
     query1, query = PreprocessPersianText(query)
-    print(query)
+    # print(query)
     with open('./PersianFiles/bigram.pickle', 'rb') as handle:
         dict_Persion = pickle.load(handle)
         for w in query[:]:
@@ -101,7 +101,7 @@ def correct_spell_word(incorrect_word, dict_byword):
 
     sort_jacard = {k: v for k, v in sorted(contain_jacard.items(), key=lambda item: item[1], reverse=True)}
 
-    print("jaccard : ",incorrect_word,sort_jacard)
+    # print("jaccard : ",incorrect_word,sort_jacard)
 
     min1 = math.inf
     editDistanceDict = {}
@@ -114,8 +114,6 @@ def correct_spell_word(incorrect_word, dict_byword):
     minval = min(editDistanceDict_sort.values())
     correct_words = [k for k, v in editDistanceDict_sort.items() if v == minval]
 
-    print("editdistance : ",incorrect_word,editDistanceDict_sort)
-    print(correct_words)
 
     return correct_words
 
@@ -132,6 +130,5 @@ def editDistance(str1, str2, m, n):
                    editDistance(str1, str2, m - 1, n - 1))  # Replace
 
 
-print(getQueryAndReturnCorrectPersion("واژهٔ مهرباد چنین نوشته شده‌است"))
-print(getQueryAndReturnCorrectEnglish("Sir Ken Robinson mokes an entertaining"))
+
 

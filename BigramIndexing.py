@@ -18,7 +18,7 @@ def make_bigram_index_English():
             break
     with open('./EnglishFiles/bigram.pickle', 'wb') as handle:
         pickle.dump(dict_English, handle, protocol=pickle.HIGHEST_PROTOCOL)
-    print(dict_English)
+    #print(dict_English)
 
 
 def make_bigram_index_Persion():
@@ -32,7 +32,7 @@ def make_bigram_index_Persion():
         #     break
     with open('./PersianFiles/bigram.pickle', 'wb') as handle:
         pickle.dump(dict_persion, handle, protocol=pickle.HIGHEST_PROTOCOL)
-    print(dict_persion)
+    #print(dict_persion)
 
 
 def add_new_doc_bigram_English(list_of_new_token):
@@ -110,17 +110,26 @@ def delete_bigram_oneWord(word, dict):
 
 
 
-make_bigram_index_English()
-make_bigram_index_Persion()
-# list = ['sir']
-# list1 = ['زیزی']
-#
-# print(add_new_doc_bigram_English(list))
-# print(delete_new_doc_bigram_English(list))
-# print(delete_new_doc_bigram_English(list))
-# list=['crisi']
-# print(delete_new_doc_bigram_English(list))
-# list=['design']
-# print(delete_new_doc_bigram_English(list))
-# print(add_new_doc_bigram_persion(list1))
-# print(delete_new_doc_bigram_persion(list1))
+def showWordOfbigramEnglish(bigram):
+    with open('./EnglishFiles/bigram.pickle', 'rb') as handle:
+        dict_English = pickle.load(handle)
+        if dict_English.__contains__(bigram):
+            return dict_English.get(bigram)
+        else:
+            return "bigramIndex does not contain this bigram"
+
+
+
+
+def showWordOfbigramPersion(bigram):
+    with open('./PersianFiles/bigram.pickle', 'rb') as handle:
+        dict_persion = pickle.load(handle)
+        if dict_persion.__contains__(bigram):
+            return dict_persion.get(bigram)
+        else:
+            return "bigramIndex does not contain this bigram"
+
+
+
+
+

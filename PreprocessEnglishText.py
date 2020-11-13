@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 # nltk.download('punkt')
 
 def ReadFile(filename):
-    csv.field_size_limit(sys.maxsize)
+    #csv.field_size_limit(sys.maxsize)
     filename = open(filename, 'r', newline='')
     list_data = list(csv.reader(filename))
     filename.close()
