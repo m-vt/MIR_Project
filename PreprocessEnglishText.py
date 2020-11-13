@@ -1,15 +1,14 @@
 import csv
 import pickle
-
+import sys
 import nltk
 from nltk.stem import PorterStemmer
 from nltk.probability import FreqDist
 import matplotlib.pyplot as plt
-
-
 # nltk.download('punkt')
 
 def ReadFile(filename):
+    csv.field_size_limit(sys.maxsize)
     filename = open(filename, 'r', newline='')
     list_data = list(csv.reader(filename))
     filename.close()
@@ -108,19 +107,19 @@ def PreprocessEnglishDoc(doc):
     return doc_without_stopwords, doc_with_stopwords_desription, doc_with_stopwords_title
 
 
-def AddEnglishDoc(doc_without_stopwords):
-    list_data = ReadFile("./EnglishFiles/ted_talk_without_stopwords.csv")
+def AddEnglishDoc(doc):
+    list_data = ReadFile("./EnglishFiles/ted_talks.csv")
     doc_id = len(list_data)
-    filename = open("./EnglishFiles/ted_talk_without_stopwords.csv", 'a', newline='')
+    filename = open("./EnglishFiles/ted_talks.csv", 'a', newline='')
     writer = csv.writer(filename)
-    doc_without_stopwords.insert(0, doc_id)
-    writer.writerow(doc_without_stopwords)
+    doc.insert(0, doc_id)
+    writer.writerow(doc)
     filename.close()
     return doc_id
 
 
 def DeleteEnglishDoc(doc_id):
-    list_data = ReadFile("./EnglishFiles/ted_talk_without_stopwords.csv")
+    list_data = ReadFile("./EnglishFiles/ted_talks.csv")
     lines = list()
     doc = "NO DOC_ID MATCHED!"
     for ld in range(1, len(list_data)):
@@ -128,7 +127,7 @@ def DeleteEnglishDoc(doc_id):
             lines.append(list_data[ld])
         else:
             doc = list_data[ld]
-    writeFile = open("./EnglishFiles/ted_talk_without_stopwords.csv", 'w')
+    writeFile = open("./EnglishFiles/ted_talks.csv", 'w')
     writer = csv.writer(writeFile)
     writer.writerow(list_data[0])
     writer.writerows(lines)

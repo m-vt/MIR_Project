@@ -1,16 +1,16 @@
 import csv
 import pickle
+import sys
 
-from PreprocessEnglishText import  PreprocessEnglishDoc, AddEnglishDoc, DeleteEnglishDoc
-from PreprocessPersianText import  PreprocessPersianText, AddPersianDoc, DeletePersianDoc
+from PreprocessEnglishText import PreprocessEnglishDoc, AddEnglishDoc, DeleteEnglishDoc
+from PreprocessPersianText import PreprocessPersianText, AddPersianDoc, DeletePersianDoc
 
-
-positional_index_description_address = "./EnglishFiles/positional_index_description.pickle"
-positional_index_title_address = "./EnglishFiles/positional_index_title.pickle"
+positional_index_english_address = "./EnglishFiles/positional_index.pickle"
 positional_index_persian_address = "./PersianFiles/positional_index.pickle"
 
 
 def ReadFile(filename):
+    csv.field_size_limit(sys.maxsize)
     filename = open(filename, 'r', newline='')
     list_data = list(csv.reader(filename))
     filename.close()
@@ -39,6 +39,7 @@ def SetDocIDAndPositions(term_dict, doc_id, list_without_stopwords, list_with_st
         else:
             term_dict[term_in_doc] = [doc_dict[term_in_doc]]
 
+
 def CreatePersianPositionalIndex():
     persian_tokenized_file = open('./PersianFiles/persian_tokenized_text.pickle', 'rb')
     persian_with_stopwords = pickle.load(persian_tokenized_file)
@@ -53,21 +54,15 @@ def CreatePersianPositionalIndex():
 def CreateEnglishPositionalIndex():
     list_without_stopwords = ReadFile("./EnglishFiles/ted_talk_without_stopwords.csv")
     list_with_stopwords = ReadFile("./EnglishFiles/ted_talks_with_stopwords.csv")
-    term_dict_description = {}  # term : [[Docid , [Pos1 , ...] ], ... ]
-    term_dict_title = {}  # term : [[Docid , [Pos1 , ...] ], ... ]
     term_dict_total = {}
     for doc_id in range(1, len(list_with_stopwords)):
-        total_list_without_stopword = ReadStrToList(list_without_stopwords[doc_id][2]) + ReadStrToList(list_without_stopwords[doc_id][15])
-        total_list_with_stopword = ReadStrToList(list_with_stopwords[doc_id][2]) + ReadStrToList(list_with_stopwords[doc_id][15])
-        # SetDocIDAndPositions(term_dict_description, doc_id, ReadStrToList(list_without_stopwords[doc_id][2]),
-        #                      ReadStrToList(list_with_stopwords[doc_id][2]))
-        # SetDocIDAndPositions(term_dict_title, doc_id, ReadStrToList(list_without_stopwords[doc_id][15]),
-        #                      ReadStrToList(list_with_stopwords[doc_id][15]))
+        total_list_without_stopword = ReadStrToList(list_without_stopwords[doc_id][2]) + ReadStrToList(
+            list_without_stopwords[doc_id][15])
+        total_list_with_stopword = ReadStrToList(list_with_stopwords[doc_id][2]) + ReadStrToList(
+            list_with_stopwords[doc_id][15])
         SetDocIDAndPositions(term_dict_total, doc_id, total_list_without_stopword,
                              total_list_with_stopword)
-    # WriteIndex(term_dict_description, "./EnglishFiles/positional_index_description.pickle")
-    # WriteIndex(term_dict_title, "./EnglishFiles/positional_index_title.pickle")
-    WriteIndex(term_dict_total, "./EnglishFiles/positional_index.pickle")
+    WriteIndex(term_dict_total, positional_index_english_address)
 
 
 def WriteIndex(term_dict, address):
@@ -87,7 +82,6 @@ def AddPositionalIndexForNewDoc(term_dict, doc_id, list_without_stopwords, list_
 
 
 def DeletePositionalIndexForNewDoc(term_dict, doc_id, list_without_stopwords, address):
-    list_without_stopwords = ReadStrToList(list_without_stopwords)
     for term in list_without_stopwords:
         if term in term_dict.keys():
             for doc_index in term_dict[term]:
@@ -99,9 +93,9 @@ def DeletePositionalIndexForNewDoc(term_dict, doc_id, list_without_stopwords, ad
 
 
 def AddPersianDocument(doc):
-    doc_without_stopwords, doc_with_stopwords = PreprocessPersianText(
-        doc['mediawiki']['page']['revision']['text']['#text'])
-    doc_id = AddPersianDoc(doc_without_stopwords)
+    details = [ doc['mediawiki']['page']['title'], doc['mediawiki']['page']['id'], doc['mediawiki']['page']['revision']['text']['#text']]
+    doc_id = AddPersianDoc(details)
+    doc_without_stopwords, doc_with_stopwords = PreprocessPersianText(doc['mediawiki']['page']['revision']['text']['#text'])
     term_dict = LoadPositionalIndex(positional_index_persian_address)
     AddPositionalIndexForNewDoc(term_dict, doc_id, doc_without_stopwords, doc_with_stopwords,
                                 positional_index_persian_address)
@@ -109,36 +103,38 @@ def AddPersianDocument(doc):
 
 
 def AddEnglishDocument(doc):
+    new_doc = doc.copy()
     doc_without_stopwords, doc_with_stopwords_desp, doc_with_stopwords_title = PreprocessEnglishDoc(doc)
-    doc_id = AddEnglishDoc(doc_without_stopwords)
-    term_dict = LoadPositionalIndex(positional_index_description_address)
-    AddPositionalIndexForNewDoc(term_dict, doc_id, doc_without_stopwords[2], doc_with_stopwords_desp,
-                                positional_index_description_address)
-    term_dict = LoadPositionalIndex(positional_index_title_address)
-    AddPositionalIndexForNewDoc(term_dict, doc_id, doc_without_stopwords[15], doc_with_stopwords_title,
-                                positional_index_title_address)
-    return doc_without_stopwords[2] + doc_without_stopwords[15]
-
+    doc_with_stopwords = doc_with_stopwords_desp + doc_with_stopwords_title
+    doc_without_stopwords_all = doc_without_stopwords[1] + doc_without_stopwords[14]
+    doc_id = AddEnglishDoc(new_doc)
+    term_dict = LoadPositionalIndex(positional_index_english_address)
+    AddPositionalIndexForNewDoc(term_dict, doc_id, doc_without_stopwords_all, doc_with_stopwords,
+                                positional_index_english_address)
+    return doc_without_stopwords_all
 
 
 def DeleteEnglishDocument(doc_id):
     doc = DeleteEnglishDoc(doc_id)
     if doc != "NO DOC_ID MATCHED!":
-        positional_index_description = LoadPositionalIndex(positional_index_description_address)
-        positional_index_title = LoadPositionalIndex(positional_index_title_address)
-        DeletePositionalIndexForNewDoc(positional_index_description, doc_id, doc[2],
-                                       positional_index_description_address)
-        DeletePositionalIndexForNewDoc(positional_index_title, doc_id, doc[15], positional_index_title_address)
+        doc, _, _ = PreprocessEnglishDoc(doc[1:])
+        positional_index_english = LoadPositionalIndex(positional_index_english_address)
+        all_tokens = doc[1] + doc[14]
+        DeletePositionalIndexForNewDoc(positional_index_english, doc_id, all_tokens, positional_index_english_address)
     else:
         print(doc)
-    return doc[2] + doc[15]
+        return doc
+    return doc[1] + doc[14]
 
 
 def DeletePersianDocument(doc_id):
     doc = DeletePersianDoc(doc_id)
     if doc != "NO DOC_ID MATCHED!":
+        doc_without_stopwords, _ = PreprocessPersianText(doc[3])
         positional_index_persian = LoadPositionalIndex(positional_index_persian_address)
-        DeletePositionalIndexForNewDoc(positional_index_persian, doc_id, doc[1], positional_index_persian_address)
+        DeletePositionalIndexForNewDoc(positional_index_persian, doc_id, doc_without_stopwords,
+                                       positional_index_persian_address)
     else:
         print(doc)
-    return doc[1]
+        return doc
+    return doc_without_stopwords

@@ -1,4 +1,5 @@
 import pickle
+import sys
 from hazm import *
 from nltk import word_tokenize
 from nltk.probability import FreqDist
@@ -8,6 +9,7 @@ import csv
 
 
 def ReadFile(filename):
+    csv.field_size_limit(sys.maxsize)
     filename = open(filename, 'r', newline='')
     list_data = list(csv.reader(filename))
     filename.close()
@@ -29,9 +31,15 @@ def CleanPersianDoc(doc):
 def Preprocess():
     all_persion_tokens = []
     persion_file = open('./PersianFiles/Persian.xml')
+    filename = open("./PersianFiles/PersianTexts.csv", 'w', newline='')
+    writer = csv.writer(filename)
     doc = xmltodict.parse(persion_file.read())
     persian_tokenized_text = {}  # docid : []
+    writer.writerow(['docid', 'title', 'id', 'text'])
     for i in range(len(doc['mediawiki']['page'])):
+        list_data = [i + 1, doc['mediawiki']['page'][i]['title'], doc['mediawiki']['page'][i]['id'],
+                     doc['mediawiki']['page'][i]['revision']['text']['#text']]
+        writer.writerow(list_data)
         clean_text = list(CleanPersianDoc(doc['mediawiki']['page'][i]['revision']['text']['#text']))
         all_persion_tokens = all_persion_tokens + clean_text
         persian_tokenized_text[i] = clean_text
@@ -39,6 +47,7 @@ def Preprocess():
         pickle.dump(all_persion_tokens, filehandle)
     with open('./PersianFiles/persian_tokenized_text.pickle', 'wb') as f:
         pickle.dump(persian_tokenized_text, f)
+    filename.close()
     return all_persion_tokens
 
 
@@ -91,17 +100,17 @@ def PreprocessPersianText(doc):
     return doc_without_stopwords, doc_with_stopwords
 
 
-def AddPersianDoc(doc_without_stopwords):
-    list_data = ReadFile("./PersianFiles/persian_without_stopwords.csv")
+def AddPersianDoc(doc):
+    list_data = ReadFile("./PersianFiles/PersianTexts.csv")
     doc_id = len(list_data) + 1
-    persian_remove_stopwords_file = open('./PersianFiles/persian_without_stopwords.csv', 'a', newline='')
-    writer1 = csv.writer(persian_remove_stopwords_file)
-    writer1.writerow([doc_id, list(doc_without_stopwords)])
+    persian_file = open('./PersianFiles/PersianTexts.csv', 'a', newline='')
+    writer = csv.writer(persian_file)
+    writer.writerow([doc_id, doc[0], doc[1], doc[2]])
     return doc_id
 
 
 def DeletePersianDoc(doc_id):
-    list_data = ReadFile("./PersianFiles/persian_without_stopwords.csv")
+    list_data = ReadFile("./PersianFiles/PersianTexts.csv")
     lines = list()
     doc = "NO DOC_ID MATCHED!"
     for ld in range(len(list_data)):
@@ -109,9 +118,8 @@ def DeletePersianDoc(doc_id):
             lines.append(list_data[ld])
         else:
             doc = list_data[ld]
-    writeFile = open("./PersianFiles/persian_without_stopwords.csv", 'w')
+    writeFile = open("./PersianFiles/PersianTexts.csv", 'w')
     writer = csv.writer(writeFile)
-    writer.writerow(list_data[0])
     writer.writerows(lines)
     return doc
 
@@ -120,4 +128,3 @@ def PreprocessAllPersianFile():
     all_persion_tokens = Preprocess()
     PlotPersianStopwords(all_persion_tokens)
     RemoveStopwordsAllPersianFile()
-
