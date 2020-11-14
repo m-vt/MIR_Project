@@ -1,8 +1,8 @@
-# Python3 implementation
 import sys
 from math import log
 from struct import pack, unpack
-from bitstring import BitArray
+from bitarray import bitarray
+
 
 
 log2 = lambda x: log(x, 2)
@@ -25,49 +25,57 @@ def Binary(x, l=1):
     return s.format(x)
 
 
-def encode_Gamma(x):
-    if (x == 0):
-        return '0'
+def encode_Gamma(list):
+    str=""
+    for x in list:
+        if (x == 0):
+            return '0'
+        n = 1 + int(log2(x))
+        b = x - 2 ** (int(log2(x)))
 
-    n = 1 + int(log2(x))
-    b = x - 2 ** (int(log2(x)))
+        l = int(log2(x))
 
-    l = int(log2(x))
-
-    return bitstring_to_bytes(Unary(n) + Binary(b, l))
+        str+=(Unary(n) + Binary(b, l))
+    return bitarray(str, endian='little')
 
 def decode_Gamma(bytes):
-    a = ''.join(format(byte, '08b') for byte in bytes)
 
+    numbers=[]
+    a=str(bytes)[10:len(str(bytes))-2]
     counter=0
     pointer=0
     flag=False
-    for i in a:
+    k=0
+    while(k<len(a)):
         if flag:
             counter += 1
-            if i=='0':
-                break
+            if a[k]=='0':
+                flag=False
+                numbers.append(int("1"+a[pointer+counter+1:pointer+2*counter+1], 2))
+                pointer+=2*counter+1
+                counter=1
+                k=pointer
         else:
-            if i =='1':
+            if a[k] =='1':
                 flag=True
             else:
                 pointer += 1
+        k+=1
 
-    number="1"+a[pointer+counter+1:]
-
-    return int(number, 2)
-
+    return numbers
 
 
 
 
 
 
-out=encode_Gamma(1025)
+
+out=encode_Gamma([24,511,1025])
+print("out")
 print(out)
 print(decode_Gamma(out))
 
-print("size before", sys.getsizeof(1025))
+print("size before", sys.getsizeof([24,511,1025]))
 print("size after", sys.getsizeof(out))
 
 

@@ -1,6 +1,7 @@
 import operator
 import time
 import os  
+from pathlib import Path
 
 from PreprocessEnglishText import PreprocessAllEnglishFile, PreprocessEnglishQuery
 from PreprocessPersianText import PreprocessAllPersianFile
@@ -32,7 +33,6 @@ def GetNumberOfDocs(filename):
 # CreatePersianPositionalIndex()
 #make_bigram_index_Persion()
 
-print("made")
 
 def printCommands():
     print("Commands:\n")
@@ -49,7 +49,6 @@ def printCommands():
     print("- get persian word posting")
     print("- commands")
     print("- quit")
-
 
 def AddEnglishDoc(path):
 
@@ -120,14 +119,12 @@ def GetPostingEnglish(term):
         return positional_index_english[term]
     return "Term Is Not In Posting!"
 
-
 def GetPostingPersian(term):
     positional_index_persian = LoadPositionalIndex(positional_index_persian_address)
     if term in positional_index_persian.keys():
         print(positional_index_persian[term])
         return positional_index_persian[term]
     return "Term Is Not In Posting!"
-
 
 def spell_check_english(query):
     a= getQueryAndReturnCorrectEnglish(query)
@@ -151,6 +148,18 @@ def spell_check_persian(query):
                 print(k + 1, "- ", a[key][k])
     return flag
 
+
+
+
+print("size of english file before compressing: ")
+print(os.stat('./EnglishFiles/positional_index.pickle').st_size)
+print("size of english file after compressing: ")
+print(os.stat('./EnglishFiles/compress_positional_index.pickle').st_size)
+
+print("size of persian file before compressing: ")
+print(os.stat('./PersianFiles/positional_index.pickle').st_size)
+print("size of persian file after compressing: ")
+print(os.stat('./PersianFiles/positional_index.pickle').st_size)
 printCommands()
 
 while (True):
@@ -162,23 +171,28 @@ while (True):
         temp_path = input()
         if os.path.isfile(temp_path):
             AddEnglishDoc(temp_path)
+            print("file added")
         else:
             print("path is invalid")
     elif command == "delete english document":
         print("enter doc id:")
         temp_id = input()
         DeleteEnglishDoc(int(temp_id))
+        print("done!")
     elif command=="add persian document":
         print("enter file address for ex: ./PersianFiles/new_persian_doc.xml")
         temp_path= input()
         if os.path.isfile(temp_path):
             AddPersianDoc(temp_path)
+            print("file added")
+
         else:
             print("path is invalid")
     elif command=="delete persian document":
         print("enter doc id:")
         temp_id = input()
         DeletePersianDoc(int(temp_id))
+        print("done!")
     elif command=="english query":
         print("enter the query ex: sir is the best")
         quey=input()

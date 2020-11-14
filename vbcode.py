@@ -1,6 +1,8 @@
 from __future__ import division
 from struct import pack, unpack
+from bitarray import bitarray
 import sys
+import struct
 
 def encode_number(number):
     bytes_list = []
@@ -10,35 +12,39 @@ def encode_number(number):
             break
         number = number // 128
     bytes_list[-1] += 128
-    return pack('%dB' % len(bytes_list), *bytes_list)
+    t=""
+    for i in bytes_list:
+        t+=format(i, '#010b')[2:]
+    return t
 
-# def encode(numbers):
-# 
-#     bytes_list = []
-#     for number in numbers:
-#         bytes_list.append(encode_number(number))
-#     return b"".join(bytes_list)
+def encode(numbers):
+
+    bytes_list=""
+    for number in numbers:
+        bytes_list+=encode_number(number)
+    return  bitarray(bytes_list, endian='little')
 
 def decode(bytestream):
-
-    n = 0
-
-    bytestream = unpack('%dB' % len(bytestream), bytestream)
-    for byte in bytestream:
-        if byte < 128:
-            n = 128 * n + byte
+    
+    numbers=[]
+    temp=""
+    for k in range(len(bytestream)//8):
+        i=8*k
+        if  not bytestream[i]:
+            temp+=str(bytestream[i:i+8])[11:18]
         else:
-            n = 128 * n + (byte - 128)
-            number=n
-            n = 0
-    return number
+            temp += str(bytestream[i:i + 8])[11:18]
+            numbers.append(int('0b'+temp, 2))
+            temp=""
+
+    return numbers
 
 
 
 
-q=encode_number(5113443)
+q=encode([824,5,214577,824,5,214577])
 print(q)
+print("size before", sys.getsizeof([824,5,214577,824,5,214577]))
+print("size after", sys.getsizeof( bitarray(q, endian='little')))
 print(decode(q))
-print("size before", sys.getsizeof(511))
-print("size after", sys.getsizeof(q))
 
