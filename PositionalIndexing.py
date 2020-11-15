@@ -4,13 +4,18 @@ import sys
 
 from PreprocessEnglishText import PreprocessEnglishDoc, AddEnglishDoc, DeleteEnglishDoc
 from PreprocessPersianText import PreprocessPersianText, AddPersianDoc, DeletePersianDoc
+from vbcode import encode
+from gammaCode import encode_Gamma
 
 positional_index_english_address = "./EnglishFiles/positional_index.pickle"
+positional_english_vcode_address = "./EnglishFiles/positional_vbcode.pickle"
+positional_english_gamma_address = "./EnglishFiles/positional_gamma.pickle"
 positional_index_persian_address = "./PersianFiles/positional_index.pickle"
-
+positional_persian_vcode_address = "./PersianFiles/positional_vbcode.pickle"
+positional_persian_gamma_address = "./PersianFiles/positional_gamma.pickle"
 
 def ReadFile(filename):
-    #csv.field_size_limit(sys.maxsize)
+    # csv.field_size_limit(sys.maxsize)
     filename = open(filename, 'r', newline='')
     list_data = list(csv.reader(filename))
     filename.close()
@@ -40,6 +45,22 @@ def SetDocIDAndPositions(term_dict, doc_id, list_without_stopwords, list_with_st
             term_dict[term_in_doc] = [doc_dict[term_in_doc]]
 
 
+def EncodePositionalIndex(term_dict, type):
+    compressed_positional = {}
+    compressed_amount = 0
+    for term in term_dict:
+        compressed_positional[term] = {}
+        for docid in term_dict[term]:
+            if type == "gamma":
+                positions = encode_Gamma(docid[1])
+            else:
+                positions = encode(docid[1])
+            compressed_amount += sys.getsizeof(docid[1]) - sys.getsizeof(positions)
+            compressed_positional[term].update({docid[0]: positions})
+    print("reduction of size after compress by" , type , ":" , compressed_amount)
+    return compressed_positional
+
+
 def CreatePersianPositionalIndex():
     persian_tokenized_file = open('./PersianFiles/persian_tokenized_text.pickle', 'rb')
     persian_with_stopwords = pickle.load(persian_tokenized_file)
@@ -48,7 +69,11 @@ def CreatePersianPositionalIndex():
     for doc_id in range(len(persian_with_stopwords)):
         SetDocIDAndPositions(term_dict, doc_id + 1, ReadStrToList(persian_without_stopwords[doc_id][1]),
                              persian_with_stopwords[doc_id])
+    compressed_positional_gamma = EncodePositionalIndex(term_dict, "gamma")
     WriteIndex(term_dict, "./PersianFiles/positional_index.pickle")
+    compressed_positional_vbcode = EncodePositionalIndex(term_dict, "vbcode")
+    WriteIndex(compressed_positional_vbcode, positional_persian_vcode_address)
+    WriteIndex(compressed_positional_gamma, positional_persian_gamma_address)
 
 
 def CreateEnglishPositionalIndex():
@@ -62,7 +87,12 @@ def CreateEnglishPositionalIndex():
             list_with_stopwords[doc_id][15])
         SetDocIDAndPositions(term_dict_total, doc_id, total_list_without_stopword,
                              total_list_with_stopword)
-    WriteIndex(term_dict_total, positional_index_english_address)
+    compressed_positional_gamma = EncodePositionalIndex(term_dict_total, "gamma")
+    compressed_positional_vbcode = EncodePositionalIndex(term_dict_total, "vbcode")
+    # WriteIndex(term_dict_total, positional_index_english_address)
+    # WriteIndex(compressed_positional_vbcode, positional_english_vcode_address)
+    # WriteIndex(compressed_positional_gamma, positional_english_gamma_address)
+    return term_dict_total
 
 
 def WriteIndex(term_dict, address):
@@ -93,9 +123,11 @@ def DeletePositionalIndexForNewDoc(term_dict, doc_id, list_without_stopwords, ad
 
 
 def AddPersianDocument(doc):
-    details = [ doc['mediawiki']['page']['title'], doc['mediawiki']['page']['id'], doc['mediawiki']['page']['revision']['text']['#text']]
+    details = [doc['mediawiki']['page']['title'], doc['mediawiki']['page']['id'],
+               doc['mediawiki']['page']['revision']['text']['#text']]
     doc_id = AddPersianDoc(details)
-    doc_without_stopwords, doc_with_stopwords = PreprocessPersianText(doc['mediawiki']['page']['revision']['text']['#text'])
+    doc_without_stopwords, doc_with_stopwords = PreprocessPersianText(
+        doc['mediawiki']['page']['revision']['text']['#text'])
     term_dict = LoadPositionalIndex(positional_index_persian_address)
     AddPositionalIndexForNewDoc(term_dict, doc_id, doc_without_stopwords, doc_with_stopwords,
                                 positional_index_persian_address)
@@ -138,3 +170,4 @@ def DeletePersianDocument(doc_id):
         print(doc)
         return doc
     return doc_without_stopwords
+

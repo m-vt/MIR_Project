@@ -37,9 +37,7 @@ def encode_Gamma(list):
 
         str+=(Unary(n) + Binary(b, l))
     return bitarray(str, endian='little')
-
 def decode_Gamma(bytes):
-
     numbers=[]
     a=str(bytes)[10:len(str(bytes))-2]
     counter=0
@@ -51,7 +49,8 @@ def decode_Gamma(bytes):
             counter += 1
             if a[k]=='0':
                 flag=False
-                numbers.append(int("1"+a[pointer+counter+1:pointer+2*counter+1], 2))
+                numbers.append\
+                    (int("1"+a[pointer+counter+1:pointer+2*counter+1], 2))
                 pointer+=2*counter+1
                 counter=1
                 k=pointer
@@ -69,13 +68,13 @@ def decode_Gamma(bytes):
 
 
 
-
-out=encode_Gamma([24,511,1025])
-print("out")
-print(out)
-print(decode_Gamma(out))
-
-print("size before", sys.getsizeof([24,511,1025]))
-print("size after", sys.getsizeof(out))
+#
+# out=encode_Gamma([24,511,1025])
+# print("out")
+# print(out)
+# print(decode_Gamma(out))
+#
+# print("size before", sys.getsizeof([24,511,1025]))
+# print("size after", sys.getsizeof(out))
 
 

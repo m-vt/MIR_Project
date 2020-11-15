@@ -102,7 +102,7 @@ def PreprocessPersianText(doc):
 
 def AddPersianDoc(doc):
     list_data = ReadFile("./PersianFiles/PersianTexts.csv")
-    doc_id = len(list_data) + 1
+    doc_id = len(list_data)
     persian_file = open('./PersianFiles/PersianTexts.csv', 'a', newline='')
     writer = csv.writer(persian_file)
     writer.writerow([doc_id, doc[0], doc[1], doc[2]])
