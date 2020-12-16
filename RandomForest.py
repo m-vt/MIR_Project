@@ -21,4 +21,4 @@ regressor.fit(X_train[:2296], y_train[:2296])
 y_pred = regressor.predict(X_train[2296:])
 
 print(accuracy_score(y_train[2296:], y_pred.round(), normalize=False))
-print(classification_report(y_train[2296:], y_pred.round()))
+print(classification_report(y_train[2296:],y_pred.round()))

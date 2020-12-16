@@ -2,13 +2,16 @@ import operator
 import time
 import os
 from pathlib import Path
+import nltk
 
+
+nltk.download('stopwords')
 from PreprocessEnglishText import PreprocessAllEnglishFile, PreprocessEnglishQuery
 from PreprocessPersianText import PreprocessAllPersianFile
 from PositionalIndexing import *
-from BigramIndexing import *
+# from BigramIndexing import *
 from Search import *
-from SpellCorrect import *
+# from SpellCorrect import *
 
 positional_index_english_address = "./EnglishFiles/positional_index.pickle"
 positional_index_persian_address = "./PersianFiles/positional_index.pickle"
@@ -79,11 +82,11 @@ def DeletePersianDoc(deleted_docid):
         add_new_doc_bigram_persion(all_persion_token)
 
 
-def EnglishSearch(query):
+def EnglishSearch(query, selected_class):
     # sir is the best and in the world I do love him sir google sir
     query_terms = PreprocessEnglishQuery(query)
     total_number_of_docs = GetNumberOfDocs("./EnglishFiles/ted_talks.csv")
-    total_docs = [i for i in range(1,total_number_of_docs + 1)]
+    total_docs = [i for i in range(1, total_number_of_docs + 1)]
     positional_index = LoadPositionalIndex(positional_index_english_address)
     tf_idf_query = CreateTF_IDFquery(query_terms, total_number_of_docs, positional_index)
     weights = Search(tf_idf_query, total_docs, positional_index)
@@ -92,7 +95,8 @@ def EnglishSearch(query):
     print("\nRESULT\n:")
     for docid in docids:
         for data in list_data:
-            if data[0] == docid:
+            # TODO
+            if data[0] == docid and data[-1] == selected_class:
                 print("name: ", data[8])
                 print("title: ", data[15])
                 print("description: ", data[2])
@@ -103,7 +107,7 @@ def PersianSearch(query):
     # # مهارت‌های من در مهارت او است و ما با کیفیت تمام این کار را می‌ کنیم
     query_terms, _ = PreprocessPersianText(query)
     total_number_of_docs = GetNumberOfDocs("./PersianFiles/PersianTexts.csv")
-    total_docs = [i for i in range(1,total_number_of_docs + 1)]
+    total_docs = [i for i in range(1, total_number_of_docs + 1)]
     positional_index = LoadPositionalIndex(positional_index_persian_address)
     tf_idf_query = CreateTF_IDFquery(query_terms, total_number_of_docs, positional_index)
     weights = Search(tf_idf_query, total_docs, positional_index)
@@ -157,7 +161,6 @@ def spell_check_persian(query):
                 print(k + 1, "- ", a[key][k])
     return flag
 
-
 # print("size of english file before compressing: ")
 # print(os.stat('./EnglishFiles/positional_index.pickle').st_size)
 # print("size of english file after compressing vb code: ")
@@ -171,83 +174,84 @@ def spell_check_persian(query):
 # print(os.stat('./PersianFiles/positional_vbcode.pickle').st_size)
 # print("size of persian file after compressing gamma code: ")
 # print(os.stat('./PersianFiles/positional_gamma.pickle').st_size)
-
-printCommands()
-
-while (True):
-    command = input()
-    if command == "add english document":
-        print("enter file address for ex: ./EnglishFiles/new_doc.csv")
-        temp_path = input()
-        if os.path.isfile(temp_path):
-            AddEnglishDoc(temp_path)
-            print("file added")
-        else:
-            print("path is invalid")
-    elif command == "delete english document":
-        print("enter doc id:")
-        temp_id = input()
-        DeleteEnglishDoc(int(temp_id))
-        print("done!")
-    elif command=="add persian document":
-        print("enter file address for ex: ./PersianFiles/new_persian_doc.xml")
-        temp_path= input()
-        if os.path.isfile(temp_path):
-            AddPersianDoc(temp_path)
-            print("file added")
-        else:
-            print("path is invalid")
-    elif command=="delete persian document":
-        print("enter doc id:")
-        temp_id = input()
-        DeletePersianDoc(int(temp_id))
-        print("done!")
-    elif command=="english query":
-        print("enter the query ex: sir is the best")
-        quey=input()
-        if spell_check_english(quey):
-            EnglishSearch(quey)
-        else:
-            print("enter edited query: ")
-            quey = input()
-            EnglishSearch(quey)
-
-    elif command=="persian query":
-        print("enter the query ex: مهارت‌های من در مهارت او است")
-        quey=input()
-
-        if spell_check_persian(quey):
-            PersianSearch(quey)
-        else:
-            print("enter edited  query: ")
-            quey = input()
-            PersianSearch(quey)
-
-    elif command=="get english word bigram":
-        print("enter bigram. ex: si")
-        word=input()
-        print(showWordOfbigramEnglish(word))
-    elif command == "get persian word bigram":
-        print("enter bigram. ex: مه")
-        word = input()
-        print(showWordOfbigramPersion(word))
-    elif command=="get distance of two words":
-        print("enter words ex: monday sunday")
-        wrd=input()
-        temp=wrd.split(" ")
-        print(editDistance(temp[0],temp[1], len(temp[0]), len(temp[1])))
-
-    elif command =="get english word posting":
-        print("enter word. ex: sir")
-        wrd = input()
-        GetPostingEnglish(wrd)
-    elif command == "get persian word posting":
-        print("enter word. ex: مهارت")
-        wrd = input()
-        GetPostingPersian(wrd)
-    elif command == "quit":
-        break
-    elif command=="commands":
-        printCommands()
-    else:
-        print("Command is invalid. try again")
+#
+# printCommands()
+#
+# while (True):
+#     command = input()
+#     if command == "add english document":
+#         print("enter file address for ex: ./EnglishFiles/new_doc.csv")
+#         temp_path = input()
+#         if os.path.isfile(temp_path):
+#             AddEnglishDoc(temp_path)
+#             print("file added")
+#         else:
+#             print("path is invalid")
+#     elif command == "delete english document":
+#         print("enter doc id:")
+#         temp_id = input()
+#         DeleteEnglishDoc(int(temp_id))
+#         print("done!")
+#     elif command=="add persian document":
+#         print("enter file address for ex: ./PersianFiles/new_persian_doc.xml")
+#         temp_path= input()
+#         if os.path.isfile(temp_path):
+#             AddPersianDoc(temp_path)
+#             print("file added")
+#         else:
+#             print("path is invalid")
+#     elif command=="delete persian document":
+#         print("enter doc id:")
+#         temp_id = input()
+#         DeletePersianDoc(int(temp_id))
+#         print("done!")
+#     elif command=="english query":
+#         print("enter the query ex: sir is the best")
+#         quey=input()
+#         if spell_check_english(quey):
+#             EnglishSearch(quey)
+#         else:
+#             print("enter edited query: ")
+#             quey = input()
+#             EnglishSearch(quey)
+## TODO : ask user to select a specific class
+#
+#     elif command=="persian query":
+#         print("enter the query ex: مهارت‌های من در مهارت او است")
+#         quey=input()
+#
+#         if spell_check_persian(quey):
+#             PersianSearch(quey)
+#         else:
+#             print("enter edited  query: ")
+#             quey = input()
+#             PersianSearch(quey)
+#
+#     elif command=="get english word bigram":
+#         print("enter bigram. ex: si")
+#         word=input()
+#         print(showWordOfbigramEnglish(word))
+#     elif command == "get persian word bigram":
+#         print("enter bigram. ex: مه")
+#         word = input()
+#         print(showWordOfbigramPersion(word))
+#     elif command=="get distance of two words":
+#         print("enter words ex: monday sunday")
+#         wrd=input()
+#         temp=wrd.split(" ")
+#         print(editDistance(temp[0],temp[1], len(temp[0]), len(temp[1])))
+#
+#     elif command =="get english word posting":
+#         print("enter word. ex: sir")
+#         wrd = input()
+#         GetPostingEnglish(wrd)
+#     elif command == "get persian word posting":
+#         print("enter word. ex: مهارت")
+#         wrd = input()
+#         GetPostingPersian(wrd)
+#     elif command == "quit":
+#         break
+#     elif command=="commands":
+#         printCommands()
+#     else:
+#         print("Command is invalid. try again")
