@@ -23,7 +23,7 @@ def GetNumberOfDocs(filename):
 
 
 # ####################### preprocess english :
-# PreprocessAllEnglishFile()
+PreprocessAllEnglishFile()
 #
 # ####################### positionl index :
 # print("English Positional Index:")

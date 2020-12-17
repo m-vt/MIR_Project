@@ -36,9 +36,10 @@ def ClassifyTrainSet(list_data):
 
 
 def ClassifyTestSet(list_test, prob_class_c, prob_class_cbar, total_terms, class_c, class_cbar, total_distinct_vocabs):
-    views = []
-    correct_ones = 0
-    not_correct_ones = 0
+    c_positive = 0
+    c_negative = 0
+    cbar_positive = 0
+    cbar_negative = 0
     for ld_id in range(len(list_test)):
         to_be_c = math.log(prob_class_c)
         to_be_cbar = math.log(prob_class_cbar)
@@ -53,12 +54,18 @@ def ClassifyTestSet(list_test, prob_class_c, prob_class_cbar, total_terms, class
             ans = "1"
         else:
             ans = "-1"
-        views.append(ans)
+
         if ans == list_test[ld_id][-1]:
-            correct_ones += 1
-        else:
-            not_correct_ones += 1
-    return views, correct_ones, not_correct_ones
+            if ans == "-1":
+                cbar_positive += 1
+            else:
+                c_positive += 1
+        else:  # ans != list_test[ld_id][-1]
+            if ans == "-1":  # and list_test[ld_id][-1] == 1
+                c_negative += 1
+            else:
+                cbar_negative += 1
+    return c_positive, cbar_positive, c_negative, cbar_negative
 
 
 def TrainNaiveBayes():
@@ -98,16 +105,22 @@ def GetNaiveBayesInfo():
     list_data = ReadFile("./Train/preprocessed_train.csv")
     list_test = list_data[2296:]
     info = LoadInfo("./Train/NaiveBayesInfo.pickle")
-    views, correct, false = ClassifyTestSet(list_test,
-                                            info["prob_class_c"],
-                                            info["prob_class_cbar"],
-                                            info["total_terms"],
-                                            info["class_c"],
-                                            info["class_cbar"],
-                                            info["total_distinct_vocabs"])
-    print("Accuracy = ", correct / (correct + false))
-    print("F1 = ", correct / (correct + false))
-    print("Precision Class 1 = ", correct / (correct + false))
-    print("Precision Class -1 = ", correct / (correct + false))
-    print("Recall Class 1 = ", correct / (correct + false))
-    print("Recall Class -1 = ", correct / (correct + false))
+    c_positive, cbar_positive, c_negative, cbar_negative = ClassifyTestSet(list_test,
+                                                                           info["prob_class_c"],
+                                                                           info["prob_class_cbar"],
+                                                                           info["total_terms"],
+                                                                           info["class_c"],
+                                                                           info["class_cbar"],
+                                                                           info["total_distinct_vocabs"])
+    print("Evaluation Naive Bayes:")
+    print("Accuracy = ", (c_positive + cbar_positive) / (c_positive + cbar_positive + c_negative + cbar_negative))
+    precision_class_c = c_positive / (c_positive + cbar_negative)
+    recall_class_c = c_positive / (c_positive + c_negative)
+    print("Precision Class 1 = ", precision_class_c)
+    print("Recall Class 1 = ", recall_class_c)
+    precision_class_cbar = cbar_positive / (cbar_positive + c_negative)
+    recall_class_cbar = cbar_positive / (cbar_positive + cbar_negative)
+    print("Precision Class -1 = ", precision_class_cbar)
+    print("Recall Class -1 = ", recall_class_cbar)
+    print("F1 = ", (2 * precision_class_c * recall_class_c) / (precision_class_c + recall_class_c))
+    #print("F1 Class -1 = ", (2 * precision_class_cbar * recall_class_cbar) / (precision_class_cbar + recall_class_cbar))

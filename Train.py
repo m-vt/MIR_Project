@@ -6,11 +6,10 @@ import nltk
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
 from nltk.corpus import stopwords
+
 stop_words = set(stopwords.words('english'))
 from NaiveBayes import TrainNaiveBayes, GetNaiveBayesInfo
 from PreprocessAndMakeTfIdf import MainMakeTfIdf
-
-
 
 
 def ReadFile(filename):
@@ -26,30 +25,29 @@ def LoadInfo(filename):
         info = pickle.load(f)
     return info
 
+
 def ReadStrToList(linestr):
     linestr = linestr.replace("\'", "")
     linestr = linestr.replace("[", "")
     linestr = linestr.replace("]", "")
     return linestr.split(", ")
 
-def ClassifyTedTalk(classifier_info_path):
+
+def ClassifyTedTalkNaiveBayes():
     preprocessed_ted_data = ReadFile("./EnglishFiles/preprocessed_ted_talk.csv")
     ted_data = ReadFile("./EnglishFiles/TedTalks.csv")
-    filename = open("./EnglishFiles/ted_talk.csv", 'w', newline='')
-
-    info = LoadInfo(classifier_info_path)
+    filename = open("./EnglishFiles/ted_talks.csv", 'w', newline='')
+    info = LoadInfo("./Train/NaiveBayesInfo.pickle")
     prob_class_c = info["prob_class_c"]
     prob_class_cbar = info["prob_class_cbar"]
     total_terms = info["total_terms"]
     class_c = info["class_c"]
     class_cbar = info["class_cbar"]
     total_distinct_vocabs = info["total_distinct_vocabs"]
-
     writer = csv.writer(filename)
     ted_data[0].append("class")
     writer.writerow(ted_data[0])
-    for ted_id in range(1 , len(preprocessed_ted_data)):
-
+    for ted_id in range(1, len(preprocessed_ted_data)):
         to_be_c = math.log(prob_class_c)
         to_be_cbar = math.log(prob_class_cbar)
         for term in ReadStrToList(preprocessed_ted_data[ted_id][1]) + ReadStrToList(preprocessed_ted_data[ted_id][14]):
@@ -96,8 +94,8 @@ def PreprocessDoc(doc):
     return doc
 
 
-# MainMakeTfIdf()
-# TrainNaiveBayes()
-# GetNaiveBayesInfo()
-# PreprocessTedTalk()
-# ClassifyTedTalk("./Train/NaiveBayesInfo.pickle")
+MainMakeTfIdf()
+TrainNaiveBayes()
+GetNaiveBayesInfo()
+PreprocessTedTalk()
+ClassifyTedTalkNaiveBayes()
