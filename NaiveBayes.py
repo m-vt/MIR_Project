@@ -35,26 +35,30 @@ def ClassifyTrainSet(list_data):
     return class_c, class_cbar, total_number_c, total_number_cbar
 
 
-def ClassifyTestSet(list_test, prob_class_c, prob_class_cbar, total_terms, class_c, class_cbar, total_distinct_vocabs):
+def Classify(data):
+    to_be_c = math.log(prob_class_c)
+    to_be_cbar = math.log(prob_class_cbar)
+    for term in data:
+        if term in total_terms.keys():
+            to_be_c += math.log((total_terms[term][0] + 1) / (len(class_c) + total_distinct_vocabs))
+            to_be_cbar += math.log((total_terms[term][1] + 1) / (len(class_cbar) + total_distinct_vocabs))
+        else:
+            to_be_c += math.log(1 / (len(class_c) + total_distinct_vocabs))
+            to_be_cbar += math.log(1 / (len(class_cbar) + total_distinct_vocabs))
+    if to_be_c > to_be_cbar:
+        ans = "1"
+    else:
+        ans = "-1"
+    return ans
+
+
+def ClassifyTestSet(list_test):
     c_positive = 0
     c_negative = 0
     cbar_positive = 0
     cbar_negative = 0
     for ld_id in range(len(list_test)):
-        to_be_c = math.log(prob_class_c)
-        to_be_cbar = math.log(prob_class_cbar)
-        for term in ReadStrToList(list_test[ld_id][1]) + ReadStrToList(list_test[ld_id][14]):
-            if term in total_terms.keys():
-                to_be_c += math.log((total_terms[term][0] + 1) / (len(class_c) + total_distinct_vocabs))
-                to_be_cbar += math.log((total_terms[term][1] + 1) / (len(class_cbar) + total_distinct_vocabs))
-            else:
-                to_be_c += math.log(1 / (len(class_c) + total_distinct_vocabs))
-                to_be_cbar += math.log(1 / (len(class_cbar) + total_distinct_vocabs))
-        if to_be_c > to_be_cbar:
-            ans = "1"
-        else:
-            ans = "-1"
-
+        ans = Classify(ReadStrToList(list_test[ld_id][1]) + ReadStrToList(list_test[ld_id][14]))
         if ans == list_test[ld_id][-1]:
             if ans == "-1":
                 cbar_positive += 1
@@ -66,6 +70,23 @@ def ClassifyTestSet(list_test, prob_class_c, prob_class_cbar, total_terms, class
             else:
                 cbar_negative += 1
     return c_positive, cbar_positive, c_negative, cbar_negative
+
+
+def ClassifyTedTalkNaiveBayes():
+    preprocessed_ted_data = ReadFile("./EnglishFiles/preprocessed_ted_talk.csv")
+    ted_data = ReadFile("./EnglishFiles/TedTalks.csv")
+    filename = open("./EnglishFiles/ted_talks.csv", 'w', newline='')
+    writer = csv.writer(filename)
+    ted_data[0].append("class")
+    writer.writerow(ted_data[0])
+    ted_id = 1
+    for preprocessed_id in range(2296, len(preprocessed_ted_data)):
+        ans = Classify(
+            ReadStrToList(preprocessed_ted_data[preprocessed_id][1]) + ReadStrToList(preprocessed_ted_data[preprocessed_id][14]))
+        ted_data[ted_id].append(ans)
+        writer.writerow(ted_data[ted_id])
+        ted_id += 1
+    filename.close()
 
 
 def TrainNaiveBayes():
@@ -104,14 +125,7 @@ def LoadInfo(filename):
 def GetNaiveBayesInfo():
     list_data = ReadFile("./Train/preprocessed_train.csv")
     list_test = list_data[2296:]
-    info = LoadInfo("./Train/NaiveBayesInfo.pickle")
-    c_positive, cbar_positive, c_negative, cbar_negative = ClassifyTestSet(list_test,
-                                                                           info["prob_class_c"],
-                                                                           info["prob_class_cbar"],
-                                                                           info["total_terms"],
-                                                                           info["class_c"],
-                                                                           info["class_cbar"],
-                                                                           info["total_distinct_vocabs"])
+    c_positive, cbar_positive, c_negative, cbar_negative = ClassifyTestSet(list_test)
     print("Evaluation Naive Bayes:")
     print("Accuracy = ", (c_positive + cbar_positive) / (c_positive + cbar_positive + c_negative + cbar_negative))
     precision_class_c = c_positive / (c_positive + cbar_negative)
@@ -123,4 +137,12 @@ def GetNaiveBayesInfo():
     print("Precision Class -1 = ", precision_class_cbar)
     print("Recall Class -1 = ", recall_class_cbar)
     print("F1 = ", (2 * precision_class_c * recall_class_c) / (precision_class_c + recall_class_c))
-    #print("F1 Class -1 = ", (2 * precision_class_cbar * recall_class_cbar) / (precision_class_cbar + recall_class_cbar))
+
+
+info = LoadInfo("./Train/NaiveBayesInfo.pickle")
+prob_class_c = info["prob_class_c"]
+prob_class_cbar = info["prob_class_cbar"]
+total_terms = info["total_terms"]
+class_c = info["class_c"]
+class_cbar = info["class_cbar"]
+total_distinct_vocabs = info["total_distinct_vocabs"]
