@@ -59,13 +59,13 @@ def MakeIdf(dict_df, number_of_doc):
     return dict_df
 
 
-def SaveLabel(label):
-    with open('./Train/label', 'wb') as filehandle:
+def SaveLabel(label, file_for_save_lable):
+    with open(file_for_save_lable, 'wb') as filehandle:
         pickle.dump(label, filehandle)
 
 
-def MakeTfIdf(idf_list, preprocess_description_and_title):
-    with open('./Train/tf_idf.csv', mode='w') as tf_idf_file:
+def MakeTfIdf(idf_list, preprocess_description_and_title, file_for_save_tf_idf):
+    with open(file_for_save_tf_idf, mode='w') as tf_idf_file:
         tf_idf_writer = csv.writer(tf_idf_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
         tf_idf_writer.writerow(list(idf_list.keys()))
         for doc_word in preprocess_description_and_title:
@@ -79,11 +79,14 @@ def MakeTfIdf(idf_list, preprocess_description_and_title):
             tf_idf_writer.writerow(tf_idf.values())
 
 
-def MainMakeTfIdf():
-    train_data = ReadFile("./Train/train.csv")
-    test_data = ReadFile("./Test/test.csv")
+def MainMakeTfIdf(train_data, test_data, file_for_save_tf_idf, file_for_save_lable):
+    train_data = ReadFile(train_data)
+    test_data = ReadFile(test_data)
     total_data = train_data + test_data[1:]
     dict_with_df, preprocess_description_and_title, label = PreprocessAndMakeDictionaryWithDfOfWord(total_data)
-    SaveLabel(label)
+    SaveLabel(label, file_for_save_lable)
     dict_with_idf = MakeIdf(dict_with_df, len(total_data))
-    MakeTfIdf(dict_with_idf, preprocess_description_and_title)
+    MakeTfIdf(dict_with_idf, preprocess_description_and_title, file_for_save_tf_idf)
+
+
+MainMakeTfIdf("./Train/train.csv", "./Test/test.csv", "./Train/tf_idf.csv", './Train/label')
