@@ -1,8 +1,8 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
-from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
+from sklearn.ensemble import RandomForestRegressor,RandomForestClassifier
 import pickle
 
 
@@ -14,21 +14,19 @@ def read_train_and_test_data(tf_idf_file, lable):
         y = pickle.load(f)
     y = [int(x) for x in y]
 
-    X_train = X[:2296]
-    y_train = y[:2296]
-    X_test = X[2296:]
-    y_test = y[2296:]
+    X_train = X[:2295]
+    y_train = y[:2295]
+    X_test = X[2295:]
+    y_test = y[2295:]
     return X_train, y_train, X_test, y_test
 
 
 def predicted(X_train, y_train, X_test):
-    # sc = StandardScaler()
-    # X_train = sc.fit_transform(X_train)
-    # y_train = sc.transform(y_train)
-    regressor = RandomForestRegressor(n_estimators=1, random_state=10)
-    regressor.fit(X_train, y_train)
-    y_pred = regressor.predict(X_test)
-    return y_pred
+    def predicted(X_train, y_train, X_test):
+        classifier = RandomForestClassifier(n_estimators=100, random_state=10)
+        classifier.fit(X_train, y_train)
+        y_pred = classifier.predict(X_test)
+        return y_pred
 
 
 def show_report_for_part_one(y_pred, y_test):

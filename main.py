@@ -9,9 +9,9 @@ nltk.download('stopwords')
 from PreprocessEnglishText import PreprocessAllEnglishFile, PreprocessEnglishQuery
 from PreprocessPersianText import PreprocessAllPersianFile
 from PositionalIndexing import *
-# from BigramIndexing import *
+from BigramIndexing import *
 from Search import *
-# from SpellCorrect import *
+from SpellCorrect import *
 
 positional_index_english_address = "./EnglishFiles/positional_index.pickle"
 positional_index_persian_address = "./PersianFiles/positional_index.pickle"
@@ -22,12 +22,13 @@ def GetNumberOfDocs(filename):
     return len(list_data)
 
 
+
 # ####################### preprocess english :
-# PreprocessAllEnglishFile()
+#PreprocessAllEnglishFile()
 #
 # ####################### positionl index :
-# print("English Positional Index:")
-# CreateEnglishPositionalIndex()
+#print("English Positional Index:")
+#CreateEnglishPositionalIndex()
 # make_bigram_index_English()
 #
 # ####################### preprocess persian :
@@ -95,7 +96,6 @@ def EnglishSearch(query, selected_class):
     print("\nRESULT\n:")
     for docid in docids:
         for data in list_data:
-            # TODO
             if data[0] == docid and data[-1] == selected_class:
                 print("name: ", data[8])
                 print("title: ", data[15])
@@ -175,83 +175,90 @@ def spell_check_persian(query):
 # print("size of persian file after compressing gamma code: ")
 # print(os.stat('./PersianFiles/positional_gamma.pickle').st_size)
 #
-# printCommands()
-#
-# while (True):
-#     command = input()
-#     if command == "add english document":
-#         print("enter file address for ex: ./EnglishFiles/new_doc.csv")
-#         temp_path = input()
-#         if os.path.isfile(temp_path):
-#             AddEnglishDoc(temp_path)
-#             print("file added")
-#         else:
-#             print("path is invalid")
-#     elif command == "delete english document":
-#         print("enter doc id:")
-#         temp_id = input()
-#         DeleteEnglishDoc(int(temp_id))
-#         print("done!")
-#     elif command=="add persian document":
-#         print("enter file address for ex: ./PersianFiles/new_persian_doc.xml")
-#         temp_path= input()
-#         if os.path.isfile(temp_path):
-#             AddPersianDoc(temp_path)
-#             print("file added")
-#         else:
-#             print("path is invalid")
-#     elif command=="delete persian document":
-#         print("enter doc id:")
-#         temp_id = input()
-#         DeletePersianDoc(int(temp_id))
-#         print("done!")
-#     elif command=="english query":
-#         print("enter the query ex: sir is the best")
-#         quey=input()
-#         if spell_check_english(quey):
-#             EnglishSearch(quey)
-#         else:
-#             print("enter edited query: ")
-#             quey = input()
-#             EnglishSearch(quey)
-## TODO : ask user to select a specific class
-#
-#     elif command=="persian query":
-#         print("enter the query ex: مهارت‌های من در مهارت او است")
-#         quey=input()
-#
-#         if spell_check_persian(quey):
-#             PersianSearch(quey)
-#         else:
-#             print("enter edited  query: ")
-#             quey = input()
-#             PersianSearch(quey)
-#
-#     elif command=="get english word bigram":
-#         print("enter bigram. ex: si")
-#         word=input()
-#         print(showWordOfbigramEnglish(word))
-#     elif command == "get persian word bigram":
-#         print("enter bigram. ex: مه")
-#         word = input()
-#         print(showWordOfbigramPersion(word))
-#     elif command=="get distance of two words":
-#         print("enter words ex: monday sunday")
-#         wrd=input()
-#         temp=wrd.split(" ")
-#         print(editDistance(temp[0],temp[1], len(temp[0]), len(temp[1])))
-#
-#     elif command =="get english word posting":
-#         print("enter word. ex: sir")
-#         wrd = input()
-#         GetPostingEnglish(wrd)
-#     elif command == "get persian word posting":
-#         print("enter word. ex: مهارت")
-#         wrd = input()
-#         GetPostingPersian(wrd)
-#     elif command == "quit":
-#         break
-#     elif command=="commands":
-#         printCommands()
-#     else:
-#         print("Command is invalid. try again")
+printCommands()
+
+while (True):
+    command = input()
+    if command == "add english document":
+        print("enter file address for ex: ./EnglishFiles/new_doc.csv")
+        temp_path = input()
+        if os.path.isfile(temp_path):
+            AddEnglishDoc(temp_path)
+            print("file added")
+        else:
+            print("path is invalid")
+    elif command == "delete english document":
+        print("enter doc id:")
+        temp_id = input()
+        DeleteEnglishDoc(int(temp_id))
+        print("done!")
+    elif command=="add persian document":
+        print("enter file address for ex: ./PersianFiles/new_persian_doc.xml")
+        temp_path= input()
+        if os.path.isfile(temp_path):
+            AddPersianDoc(temp_path)
+            print("file added")
+        else:
+            print("path is invalid")
+    elif command=="delete persian document":
+        print("enter doc id:")
+        temp_id = input()
+        DeletePersianDoc(int(temp_id))
+        print("done!")
+    elif command=="english query":
+        print("enter the query. ex: sir is the best")
+        quey=input()
+        print("select a class 1 or -1:")
+        selected_class=input()
+        if spell_check_english(quey):
+            if selected_class==1:
+                EnglishSearch(quey,"1")
+            else:
+                EnglishSearch(quey, "-1")
+        else:
+            print("enter edited query: ")
+            quey = input()
+            if selected_class == 1:
+                EnglishSearch(quey, "1")
+            else:
+                EnglishSearch(quey, "-1")
+
+    elif command=="persian query":
+        print("enter the query ex: مهارت‌های من در مهارت او است")
+        quey=input()
+
+        if spell_check_persian(quey):
+            PersianSearch(quey)
+        else:
+            print("enter edited  query: ")
+            quey = input()
+            PersianSearch(quey)
+
+    elif command=="get english word bigram":
+        print("enter bigram. ex: si")
+        word=input()
+        print(showWordOfbigramEnglish(word))
+    elif command == "get persian word bigram":
+        print("enter bigram. ex: مه")
+        word = input()
+        print(showWordOfbigramPersion(word))
+    elif command=="get distance of two words":
+        print("enter words ex: monday sunday")
+        wrd=input()
+        temp=wrd.split(" ")
+        print(editDistance(temp[0],temp[1], len(temp[0]), len(temp[1])))
+
+    elif command =="get english word posting":
+        print("enter word. ex: sir")
+        wrd = input()
+        GetPostingEnglish(wrd)
+    elif command == "get persian word posting":
+        print("enter word. ex: مهارت")
+        wrd = input()
+        GetPostingPersian(wrd)
+    elif command == "quit":
+        break
+    elif command=="commands":
+        printCommands()
+    else:
+        print("Command is invalid. try again")

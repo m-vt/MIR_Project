@@ -1,5 +1,6 @@
 import pickle
 import pandas as pd
+import numpy
 from sklearn import svm, metrics
 
 
@@ -9,10 +10,10 @@ def read_train_and_test_data(tf_idf_file, lable):
     with open(lable, 'rb') as f:
         y = pickle.load(f)
     y = [int(x) for x in y]
-    X_train = X[:2296]
-    y_train = y[:2296]
-    X_test = X[2296:]
-    y_test = y[2296:]
+    X_train = X[:2295]
+    y_train = y[:2295]
+    X_test = X[2295:]
+    y_test = y[2295:]
     return X_train, y_train, X_test, y_test
 
 
@@ -37,9 +38,9 @@ def save_predict_views_in_ted_talk_csv(file, predicted_list):
         ted_talk.to_csv("./EnglishFiles/ted_talks.csv", index=False)
 
 
-def train_svm_for_test(tf_idf_file, lable):
+def train_svm_for_test(tf_idf_file, lable,c):
     X_train, y_train, X_test, y_test = read_train_and_test_data(tf_idf_file, lable)
-    predicted_list, classifier = predicted(X_train, y_train, X_test)
+    predicted_list, classifier = predicted(X_train, y_train, X_test,c)
     show_report_for_part_one(y_test, predicted_list, classifier)
 
 
