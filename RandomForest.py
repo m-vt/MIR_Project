@@ -22,16 +22,15 @@ def read_train_and_test_data(tf_idf_file, lable):
 
 
 def predicted(X_train, y_train, X_test):
-    def predicted(X_train, y_train, X_test):
-        classifier = RandomForestClassifier(n_estimators=100, random_state=10)
-        classifier.fit(X_train, y_train)
-        y_pred = classifier.predict(X_test)
-        return y_pred
+    classifier = RandomForestClassifier(n_estimators=100, random_state=10)
+    classifier.fit(X_train, y_train)
+    y_pred = classifier.predict(X_test)
+    return y_pred
 
 
 def show_report_for_part_one(y_pred, y_test):
-    print(accuracy_score(y_test, y_pred.round(), normalize=False))
-    print(classification_report(y_test, y_pred.round()))
+    print(accuracy_score(y_test, y_pred, normalize=False))
+    print(classification_report(y_test, y_pred))
 
 
 def save_predict_views_in_ted_talk_csv(file, predicted_list):

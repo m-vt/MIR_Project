@@ -2,11 +2,15 @@ import csv
 import math
 import pickle
 #from typing import Final
+from typing import Final
 
 import nltk
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
 from nltk.corpus import stopwords
+
+import RandomForest
+import Svm
 import knn
 #import Svm,RandomForest
 
@@ -17,9 +21,9 @@ from PreprocessAndMakeTfIdf import MainMakeTfIdf
 
 
 ###################### preprocess   ############################
-MainMakeTfIdf("./Train/train.csv", "./Test/test.csv", "./Train/tf_idf.csv", './Train/label',"./Train/preprocessed_train.csv")
-MainMakeTfIdf("./Train/train.csv", "./EnglishFiles/TedTalks.csv", "./EnglishFiles/tf_idf_ted_talks.csv",
-              './EnglishFiles/label_ted_talks','./EnglishFiles/preprocessed_ted_talk.csv')
+# MainMakeTfIdf("./Train/train.csv", "./Test/test.csv", "./Train/tf_idf.csv", './Train/label',"./Train/preprocessed_train.csv")
+# MainMakeTfIdf("./Train/train.csv", "./EnglishFiles/TedTalks.csv", "./EnglishFiles/tf_idf_ted_talks.csv",
+#               './EnglishFiles/label_ted_talks','./EnglishFiles/preprocessed_ted_talk.csv')
 
 ###################### naive bayes  ###################
 # TrainNaiveBayes()
@@ -27,7 +31,7 @@ MainMakeTfIdf("./Train/train.csv", "./EnglishFiles/TedTalks.csv", "./EnglishFile
 # ClassifyTedTalkNaiveBayes()
 ###################### svm and randomForest  ###################
 # c: Final = 1
-#Svm.train_svm_for_test("./Train/tf_idf.csv", './Train/label',c)
+# Svm.train_svm_for_test("./Train/tf_idf.csv", './Train/label',c)
 # Svm.train_svm_for_classify_ted_talk("./EnglishFiles/tf_idf_ted_talks.csv", './EnglishFiles/label_ted_talks', c)
 #
 # RandomForest.train_random_forest_for_test("./Train/tf_idf.csv", './Train/label')
