@@ -34,7 +34,7 @@ def save_predict_views_in_ted_talk_csv(file, predicted_list):
     print(len(ted_talk))
     for i in range(len(ted_talk)-1):
         ted_talk.at[i, "views"] = predicted_list[i]
-        ted_talk.to_csv("./EnglishFiles/classify_with_svm.csv", index=False)
+        ted_talk.to_csv("./EnglishFiles/ted_talks.csv", index=False)
 
 
 def train_svm_for_test(tf_idf_file, lable):

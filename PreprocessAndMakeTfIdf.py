@@ -17,8 +17,8 @@ def ReadFile(filename):
     return list_data
 
 
-def PreprocessAndMakeDictionaryWithDfOfWord(list_data):
-    filename = open("./Train/preprocessed_train.csv", 'w', newline='')
+def PreprocessAndMakeDictionaryWithDfOfWord(list_data,file_for_preprocess):
+    filename = open(file_for_preprocess, 'w', newline='')
     writer = csv.writer(filename)
     writer.writerow(list_data[0])
     preprocess_description_and_title = []
@@ -79,14 +79,14 @@ def MakeTfIdf(idf_list, preprocess_description_and_title, file_for_save_tf_idf):
             tf_idf_writer.writerow(tf_idf.values())
 
 
-def MainMakeTfIdf(train_data, test_data, file_for_save_tf_idf, file_for_save_lable):
+def MainMakeTfIdf(train_data, test_data, file_for_save_tf_idf, file_for_save_lable,file_for_preprocess):
     train_data = ReadFile(train_data)
     test_data = ReadFile(test_data)
     total_data = train_data + test_data[1:]
-    dict_with_df, preprocess_description_and_title, label = PreprocessAndMakeDictionaryWithDfOfWord(total_data)
+    dict_with_df, preprocess_description_and_title, label = PreprocessAndMakeDictionaryWithDfOfWord(total_data,file_for_preprocess)
     SaveLabel(label, file_for_save_lable)
     dict_with_idf = MakeIdf(dict_with_df, len(total_data))
     MakeTfIdf(dict_with_idf, preprocess_description_and_title, file_for_save_tf_idf)
 
 
-MainMakeTfIdf("./Train/train.csv", "./Test/test.csv", "./Train/tf_idf.csv", './Train/label')
+

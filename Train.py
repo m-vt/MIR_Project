@@ -103,14 +103,15 @@ def PreprocessDoc(doc):
 # PreprocessTedTalk()
 # ClassifyTedTalkNaiveBayes()
 
-# MainMakeTfIdf("./Train/train.csv", "./Test/test.csv", "./Train/tf_idf.csv", './Train/label')
+###################### preprocess   ############################
+# MainMakeTfIdf("./Train/train.csv", "./Test/test.csv", "./Train/tf_idf.csv", './Train/label',"./Train/preprocessed_train.csv")
 # MainMakeTfIdf("./Train/train.csv", "./EnglishFiles/TedTalks.csv", "./Train/tf_idf_ted_talks.csv",
-#               './Train/label_ted_talks')
+#               './Train/label_ted_talks','./EnglishFiles/preprocessed_ted_talk.csv')
 ###################### svm and randomForest  ###################
-c: Final = 1
+# c: Final = 1
 # Svm.train_svm_for_test("./Train/tf_idf.csv", './Train/label',c)
 # Svm.train_svm_for_classify_ted_talk("./Train/tf_idf_ted_talks.csv", './Train/label_ted_talks', c)
-
+#
 # RandomForest.train_random_forest_for_test("./Train/tf_idf.csv", './Train/label')
-RandomForest.train_random_forest_for_classify_ted_talk("./Train/tf_idf_ted_talks.csv", './Train/label_ted_talks')
+# RandomForest.train_random_forest_for_classify_ted_talk("./Train/tf_idf_ted_talks.csv", './Train/label_ted_talks')
 
