@@ -8,7 +8,7 @@ from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
 from nltk.corpus import stopwords
 import knn
-import Svm,RandomForest
+#import Svm,RandomForest
 
 stop_words = set(stopwords.words('english'))
 #from NaiveBayes import TrainNaiveBayes, GetNaiveBayesInfo, ClassifyTedTalkNaiveBayes
@@ -30,17 +30,17 @@ MainMakeTfIdf("./Train/train.csv", "./EnglishFiles/TedTalks.csv", "./EnglishFile
 #Svm.train_svm_for_test("./Train/tf_idf.csv", './Train/label',c)
 # Svm.train_svm_for_classify_ted_talk("./EnglishFiles/tf_idf_ted_talks.csv", './EnglishFiles/label_ted_talks', c)
 #
-RandomForest.train_random_forest_for_test("./Train/tf_idf.csv", './Train/label')
-RandomForest.train_random_forest_for_classify_ted_talk("./EnglishFiles/tf_idf_ted_talks.csv", './EnglishFiles/label_ted_talks')
+# RandomForest.train_random_forest_for_test("./Train/tf_idf.csv", './Train/label')
+# RandomForest.train_random_forest_for_classify_ted_talk("./EnglishFiles/tf_idf_ted_talks.csv", './EnglishFiles/label_ted_talks')
 ######################## knn ######################
 
-k=input("k :")
-clf,x_test,y_target,x_train,y_train=knn.TrainKnn(int(k))
-y_test_predicted= knn.PredictTestData(x_test,clf)
-y_train_predicted= knn.PredictTestData(x_train,clf)
-print("for test data:")
-knn.EvaluationKnn(1,y_test_predicted,y_target)
-print("for train data:")
-knn.EvaluationKnn(1,y_train_predicted,y_train)
+# k=input("k :")
+# clf,x_test,y_target,x_train,y_train=knn.TrainKnn(int(k))
+# y_test_predicted= knn.PredictTestData(x_test,clf)
+# y_train_predicted= knn.PredictTestData(x_train,clf)
+# print("for test data:")
+# knn.EvaluationKnn(1,y_test_predicted,y_target)
+# print("for train data:")
+# knn.EvaluationKnn(1,y_train_predicted,y_train)
 # predicted= knn.ClassifyTedTalkKnn(clf)
 # knn.SaveViews(predicted)

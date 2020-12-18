@@ -9,13 +9,9 @@ import pickle
 class KNN:
     def __init__(self, k):
         self.k = k
-
     def fit(self, X, y):
         self.X_train = X
         self.y_train = y
-
-    def distance(self, X1, X2):
-        distance = scipy.spatial.distance.euclidean(X1, X2)
 
     def predict(self, X_test):
         final_output = []
