@@ -124,9 +124,23 @@ def LoadInfo(filename):
 
 def GetNaiveBayesInfo():
     list_data = ReadFile("./Train/preprocessed_train.csv")
+    list_test = list_data[:2296]
+    c_positive, cbar_positive, c_negative, cbar_negative = ClassifyTestSet(list_test)
+    print("Evaluation Naive Bayes For Train Set:")
+    print("Accuracy = ", (c_positive + cbar_positive) / (c_positive + cbar_positive + c_negative + cbar_negative))
+    precision_class_c = c_positive / (c_positive + cbar_negative)
+    recall_class_c = c_positive / (c_positive + c_negative)
+    print("Precision Class 1 = ", precision_class_c)
+    print("Recall Class 1 = ", recall_class_c)
+    precision_class_cbar = cbar_positive / (cbar_positive + c_negative)
+    recall_class_cbar = cbar_positive / (cbar_positive + cbar_negative)
+    print("Precision Class -1 = ", precision_class_cbar)
+    print("Recall Class -1 = ", recall_class_cbar)
+    print("F1 = ", (2 * precision_class_c * recall_class_c) / (precision_class_c + recall_class_c))
+
     list_test = list_data[2296:]
     c_positive, cbar_positive, c_negative, cbar_negative = ClassifyTestSet(list_test)
-    print("Evaluation Naive Bayes:")
+    print("\nEvaluation Naive Bayes For Test Set:")
     print("Accuracy = ", (c_positive + cbar_positive) / (c_positive + cbar_positive + c_negative + cbar_negative))
     precision_class_c = c_positive / (c_positive + cbar_negative)
     recall_class_c = c_positive / (c_positive + c_negative)
