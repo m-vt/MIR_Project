@@ -18,7 +18,7 @@ def read_train_and_test_data(tf_idf_file, lable):
 
 
 def predicted(x_train, y_train, x_test, c):
-    classifier = svm.SVC(C=c, kernel='linear', cache_size=8000, probability=False)
+    classifier = svm.SVC(C=c, kernel='rbf', cache_size=8000, probability=False)
     classifier.fit(x_train, y_train)
     predicted_list = classifier.predict(x_test)
     return predicted_list, classifier
@@ -31,8 +31,6 @@ def show_report_for_part_one(y_test, predicted_list, classifier):
 
 def save_predict_views_in_ted_talk_csv(file, predicted_list):
     ted_talk = pd.read_csv(file)
-    print(len(predicted_list))
-    print(len(ted_talk))
     for i in range(len(ted_talk)-1):
         ted_talk.at[i, "views"] = predicted_list[i]
         ted_talk.to_csv("./EnglishFiles/ted_talks.csv", index=False)

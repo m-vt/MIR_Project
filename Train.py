@@ -27,10 +27,10 @@ from PreprocessAndMakeTfIdf import MainMakeTfIdf
 
 ###################### naive bayes  ###################
 # TrainNaiveBayes()
-GetNaiveBayesInfo()
+# GetNaiveBayesInfo()
 # ClassifyTedTalkNaiveBayes()
 ###################### svm and randomForest  ###################
-# c: Final = 1
+# c: Final = 2
 # Svm.train_svm_for_test("./Train/tf_idf.csv", './Train/label',c)
 # Svm.train_svm_for_classify_ted_talk("./EnglishFiles/tf_idf_ted_talks.csv", './EnglishFiles/label_ted_talks', c)
 #
