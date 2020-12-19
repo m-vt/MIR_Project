@@ -89,7 +89,7 @@ def CreateEnglishPositionalIndex():
                              total_list_with_stopword)
     compressed_positional_gamma = EncodePositionalIndex(term_dict_total, "gamma")
     compressed_positional_vbcode = EncodePositionalIndex(term_dict_total, "vbcode")
-    # WriteIndex(term_dict_total, positional_index_english_address)
+    WriteIndex(term_dict_total, positional_index_english_address)
     # WriteIndex(compressed_positional_vbcode, positional_english_vcode_address)
     # WriteIndex(compressed_positional_gamma, positional_english_gamma_address)
     return term_dict_total

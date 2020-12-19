@@ -5,7 +5,7 @@ from pathlib import Path
 import nltk
 
 
-nltk.download('stopwords')
+# nltk.download('stopwords')
 from PreprocessEnglishText import PreprocessAllEnglishFile, PreprocessEnglishQuery
 from PreprocessPersianText import PreprocessAllPersianFile
 from PositionalIndexing import *
@@ -24,11 +24,11 @@ def GetNumberOfDocs(filename):
 
 
 # ####################### preprocess english :
-#PreprocessAllEnglishFile()
+# PreprocessAllEnglishFile()
 #
 # ####################### positionl index :
-#print("English Positional Index:")
-#CreateEnglishPositionalIndex()
+# print("English Positional Index:")
+# CreateEnglishPositionalIndex()
 # make_bigram_index_English()
 #
 # ####################### preprocess persian :
@@ -91,16 +91,21 @@ def EnglishSearch(query, selected_class):
     positional_index = LoadPositionalIndex(positional_index_english_address)
     tf_idf_query = CreateTF_IDFquery(query_terms, total_number_of_docs, positional_index)
     weights = Search(tf_idf_query, total_docs, positional_index)
-    docids = [str(doc[0]) for doc in sorted(weights.items(), key=operator.itemgetter(1), reverse=True)[:10]]
+    docids = [str(doc[0]) for doc in sorted(weights.items(), key=operator.itemgetter(1), reverse=True)]
     list_data = ReadFile("./EnglishFiles/ted_talks.csv")
-    print("\nRESULT\n:")
+    ten_doc =[]
     for docid in docids:
         for data in list_data:
             if data[0] == docid and data[-1] == selected_class:
-                print("name: ", data[8])
-                print("title: ", data[15])
-                print("description: ", data[2])
-                print("#################################")
+                ten_doc.append(data)
+            if len(ten_doc) == 10:
+                break
+    print("\nRESULT\n:")
+    for doc in ten_doc:
+        print("name: ", doc[8])
+        print("title: ", doc[15])
+        print("description: ", doc[2])
+        print("#################################")
 
 
 def PersianSearch(query):
@@ -211,14 +216,14 @@ while (True):
         print("select a class 1 or -1:")
         selected_class=input()
         if spell_check_english(quey):
-            if selected_class==1:
+            if selected_class == "1":
                 EnglishSearch(quey,"1")
             else:
                 EnglishSearch(quey, "-1")
         else:
             print("enter edited query: ")
             quey = input()
-            if selected_class == 1:
+            if selected_class == "1":
                 EnglishSearch(quey, "1")
             else:
                 EnglishSearch(quey, "-1")

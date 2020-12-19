@@ -34,8 +34,8 @@ from PreprocessAndMakeTfIdf import MainMakeTfIdf
 # Svm.train_svm_for_test("./Train/tf_idf.csv", './Train/label',c)
 # Svm.train_svm_for_classify_ted_talk("./EnglishFiles/tf_idf_ted_talks.csv", './EnglishFiles/label_ted_talks', c)
 #
-# RandomForest.train_random_forest_for_test("./Train/tf_idf.csv", './Train/label')
-# RandomForest.train_random_forest_for_classify_ted_talk("./EnglishFiles/tf_idf_ted_talks.csv", './EnglishFiles/label_ted_talks')
+RandomForest.train_random_forest_for_test("./Train/tf_idf.csv", './Train/label')
+RandomForest.train_random_forest_for_classify_ted_talk("./EnglishFiles/tf_idf_ted_talks.csv", './EnglishFiles/label_ted_talks')
 ######################## knn ######################
 
 # k=input("k :")
